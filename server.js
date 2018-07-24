@@ -2,24 +2,39 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var files;
+
+var LOCAL_ADDRESS;
+var PORT = 8080; 
+
+require('dns').lookup(require('os').hostname(), function (err, add, fam) {
+  LOCAL_ADDRESS = add;
+  console.log('Hosting on local address: ' + LOCAL_ADDRESS + ":" + PORT);
+});
+
 //create a server object:
 http.createServer(function (req, res) {
   var q = url.parse(req.url, true).query;
+  var page = req.url.substr(1);
+  console.log("page:" + page)
   var r = res;
-  var file = page_to_file(q.page);
-  if(file == ''){
-    serveFile('templates/index.html', r);
-    return;
-  }
+  var file = page_to_file(page);
   serveFile(file, res);
 }).listen(8080);
 
-function page_to_file(page){  
-  var pages = {
-    'index' : 'index.html'
-  };
-  if(!(page in pages)){ return ''; }
-  return 'templates/' + pages[page];
+function page_to_file(page){
+  if( typeof page === 'undefined' || page === ""){
+    return "public/html/index.html";
+  }
+  else{
+    console.log("Page defined as " + page);
+  }
+
+  var path = "public/html/" + page + ".html";
+  if (fs.existsSync(path)) {
+    return path;
+  }
+
+  return 'public/html/notfound.html';
 }
 
 function getFiles(_path){
