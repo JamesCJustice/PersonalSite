@@ -34,6 +34,11 @@ function page_to_file(page){
     return path;
   }
 
+  path = "public/js/" + page;
+  if (fs.existsSync(path)) {
+    return path;
+  }  
+
   return 'public/html/notfound.html';
 }
 
