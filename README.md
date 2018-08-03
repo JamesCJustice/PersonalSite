@@ -4,6 +4,11 @@ This is my personal site, a continuation of the node site I removed from the Man
 A webserver was wasted on merely serving static files, but I'll find some nifty things to do with this one. This website exists for me to practice front-end skills, develop utilities, and try out weird ideas.
 
 
+# Active Development
+
+- Get express installed
+
+
 # Candidate Features
 
 front-end tasks

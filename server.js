@@ -2,6 +2,8 @@ var http = require('http');
 var url = require('url');
 var fs = require('fs');
 var files;
+const express = require('express')
+const app = express()
 
 var LOCAL_ADDRESS;
 var PORT = 8080; 
@@ -11,19 +13,32 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   console.log('Hosting on local address: ' + LOCAL_ADDRESS + ":" + PORT);
 });
 
-//create a server object:
-http.createServer(function (req, res) {
-  var q = url.parse(req.url, true).query;
-  var page = req.url.substr(1);
-  console.log("page:" + page)
-  var r = res;
-  var file = page_to_file(page);
+app.get('/', function(req, res){
+  var file = 'public/html/index.html';
   serveFile(file, res);
-}).listen(8080);
+});
+
+app.get('/public', function(req, res){
+  var q = url.parse(req.url, true).query;
+  var file = page_to_file(q.page);
+  serveFile(file, res);
+});
+
+app.listen(PORT, () => console.log('Example app listening on port 3000!'));
+
+
+//create a server object:
+// http.createServer(function (req, res) {
+//   var q = url.parse(req.url, true).query;
+//   var page = req.url.substr(1);
+//   var r = res;
+//   var file = page_to_file(page);
+//   serveFile(file, res);
+// }).listen(8080);
 
 function page_to_file(page){
   if( typeof page === 'undefined' || page === ""){
-    return "public/html/index.html";
+    return 'public/html/notfound.html';
   }
   else{
     console.log("Page defined as " + page);
