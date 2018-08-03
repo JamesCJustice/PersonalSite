@@ -6,7 +6,7 @@ A webserver was wasted on merely serving static files, but I'll find some nifty 
 
 # Active Development
 
-- Get express installed
+Import HTML and scripts properly.
 
 
 # Candidate Features

@@ -13,11 +13,20 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   console.log('Hosting on local address: ' + LOCAL_ADDRESS + ":" + PORT);
 });
 
+
+// Index
 app.get('/', function(req, res){
   var file = 'public/html/index.html';
   serveFile(file, res);
 });
 
+// Login
+app.get('/login', function(req, res){
+  var file = 'public/html/login.html';
+  serveFile(file, res);
+});
+
+// Request arbitrary public page.
 app.get('/public', function(req, res){
   var q = url.parse(req.url, true).query;
   var file = page_to_file(q.page);
