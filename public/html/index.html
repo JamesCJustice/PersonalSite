@@ -1,13 +1,23 @@
 <!DOCTYPE html>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous">
+</script>
+<script src="public?file=header.js"></script>
+<div id="header_div"></div>
 
 <body>
-        <script src="boop.js"></script>
     <div id="cool_div">
     <h1>Hello, world!</h1>
 
     Hey there. This is my personal site.
     Check back much later for content.
-
-
     </div>
 </body>
+
+<script>
+    $(document).ready(function(){
+         header.populate();
+    });
+</script>

@@ -1,6 +1,13 @@
-<head>
-  <link rel="import" href="public?page=header">
-</head>
+<!DOCTYPE html>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous">
+</script>
+<script src="public?file=header.js"></script>
+<div id="header_div"></div>
+
+
 <h2>Login Page</h2>
 
 <div id = "login_div">
@@ -8,3 +15,9 @@
     Password: <input type="text" name="password"><br>
     <input type="submit" value="Submit">
 </div>
+
+<script>
+    $(document).ready(function(){
+         header.populate();
+    });
+</script>

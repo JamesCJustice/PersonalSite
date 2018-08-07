@@ -26,11 +26,18 @@ app.get('/login', function(req, res){
   serveFile(file, res);
 });
 
-// Request arbitrary public page.
+// Request arbitrary public file
 app.get('/public', function(req, res){
   var q = url.parse(req.url, true).query;
-  var file = page_to_file(q.page);
+  var file = q.file;
+  console.log("file " + file);
+  
+  file = string_to_file(file);
+  if(file === 'public/html/notfound.html'){
+    console.log("File not found");
+  }
   serveFile(file, res);
+  
 });
 
 app.listen(PORT, () => console.log('Example app listening on port 3000!'));
@@ -45,20 +52,20 @@ app.listen(PORT, () => console.log('Example app listening on port 3000!'));
 //   serveFile(file, res);
 // }).listen(8080);
 
-function page_to_file(page){
-  if( typeof page === 'undefined' || page === ""){
+function string_to_file(file){
+  if( typeof file === 'undefined' || file === ""){
     return 'public/html/notfound.html';
   }
   else{
-    console.log("Page defined as " + page);
+    console.log("File defined as " + file);
   }
 
-  var path = "public/html/" + page + ".html";
+  var path = "public/html/" + file;
   if (fs.existsSync(path)) {
     return path;
   }
 
-  path = "public/js/" + page;
+  path = "public/js/" + file;
   if (fs.existsSync(path)) {
     return path;
   }  
