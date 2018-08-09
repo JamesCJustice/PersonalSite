@@ -5,19 +5,25 @@
   crossorigin="anonymous">
 </script>
 <script src="public?file=header.js"></script>
+<script src="public?file=login.js"></script>
 <div id="header_div"></div>
-
+<div id="response_div"></div>
 
 <h2>Login Page</h2>
 
 <div id = "login_div">
-    Username: <input type="text" name="username"><br>
-    Password: <input type="text" name="password"><br>
-    <input type="submit" value="Submit">
+    Username: <input id="username_input" type="text" name="username"><br>
+    Password: <input id="password_input" type="text" name="password"><br>
+    <input id="login_button" type="submit" value="Submit">
 </div>
 
 <script>
     $(document).ready(function(){
          header.populate();
+
+        $("#login_button").click(function(){
+            login.login();
+        });
     });
+
 </script>

@@ -6,7 +6,7 @@ A webserver was wasted on merely serving static files, but I'll find some nifty 
 
 # Active Development
 
-Import HTML and scripts properly.
+Create a login handled via ajax rather than form submission.
 
 
 # Candidate Features

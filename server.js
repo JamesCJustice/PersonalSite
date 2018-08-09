@@ -4,6 +4,7 @@ var fs = require('fs');
 var files;
 const express = require('express')
 const app = express()
+var sqlite3 = require('sqlite3').verbose();
 
 var LOCAL_ADDRESS;
 var PORT = 8080; 
@@ -13,6 +14,10 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   console.log('Hosting on local address: ' + LOCAL_ADDRESS + ":" + PORT);
 });
 
+require('./routes/profile')(app);
+
+// Init databases
+init_profile_db();
 
 // Index
 app.get('/', function(req, res){
@@ -40,17 +45,22 @@ app.get('/public', function(req, res){
   
 });
 
-app.listen(PORT, () => console.log('Example app listening on port 3000!'));
+app.get('/public', function(req, res){
+  var q = url.parse(req.url, true).query;
+  var file = q.file;
+  console.log("file " + file);
+  
+  file = string_to_file(file);
+  if(file === 'public/html/notfound.html'){
+    console.log("File not found");
+  }
+  serveFile(file, res);
+  
+});
 
-
-//create a server object:
-// http.createServer(function (req, res) {
-//   var q = url.parse(req.url, true).query;
-//   var page = req.url.substr(1);
-//   var r = res;
-//   var file = page_to_file(page);
-//   serveFile(file, res);
-// }).listen(8080);
+app.listen(PORT, function(){
+ console.log("Listening"); 
+});
 
 function string_to_file(file){
   if( typeof file === 'undefined' || file === ""){
@@ -90,4 +100,21 @@ function serveFile(file, res){
     _res.write(data);
     _res.end();
   });
+}
+
+function init_profile_db(){
+  var path = "profile.db";
+  if (fs.existsSync(path)) {
+    return;
+  }
+  var db = new sqlite3.Database('profile.db');
+  db.serialize(function() {
+  var query = "";
+  query += 'CREATE TABLE profile (';
+  query += 'username VARCHAR(255),';
+  query += 'password VARCHAR(255)';
+  query += ')';
+
+  db.run(query);
+});
 }

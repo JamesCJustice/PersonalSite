@@ -28,6 +28,5 @@ header.populate = function(){
         header_html += "</li>";
     }
     header_html += "</ul>";
-    
     $("#header_div").html(header_html);
 };
