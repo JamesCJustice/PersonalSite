@@ -1,14 +1,52 @@
 var sqlite3 = require('sqlite3').verbose();
 var db = new sqlite3.Database('profile.db');
 var url = require('url');
+var bodyParser = require('body-parser')
+
 module.exports = function(app){
+app.use(bodyParser.json())
 
     app.post('/auth', function(req, res){
-        var result = {
-            token: "shinynewtoken",
-            success: 1
-        };
-        res.json(result);
+        var username = req.body.username;
+        var password = req.body.password;
+        console.log("Received " + username + " and " + password);
+        var result = {};
+
+        if( !username || !password){
+            result = {
+                msg: "Missing username or password",
+                success: false
+            };
+
+            res.status(400).json(result);
+            return;
+        }
+
+        
+
+
+        db.get("SELECT username FROM profile WHERE username = ? && password = ?", username, password, function(err, row){
+            if(row){
+                result = {
+                    token: "shinynewtoken",
+                    success: 1,
+                    msg: success
+                };
+                res.status(200).json(result);
+                return;
+            }
+            else{
+                result = {
+                    success: 0,
+                    msg: "Wrong username or password."
+                };
+                res.status(400).json(result);
+            }
+        });
+
+
+
+        //res.status(200).json(result);
     });
 
     app.post('/register_profile', function(req, res){
@@ -38,6 +76,4 @@ module.exports = function(app){
     app.post('/', function(req, res){
         res.send("Cool stuff!");
     });
-
 }
-
