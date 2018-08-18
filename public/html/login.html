@@ -13,7 +13,7 @@
 
 <div id = "login_div">
     Username: <input id="login_username_input" type="text" name="username"><br>
-    Password: <input id="login_password_input" type="text" name="password"><br>
+    Password: <input id="login_password_input" type="password" name="password"><br>
     <div id = "login_btn_container">
       <input id="login_button" type="submit" value="Log in">
       <input id="show_reg_button" type="submit" value="Register">
@@ -21,9 +21,9 @@
 </div>
 
 <div id = "reg_div" style="display: none">
-    Email: <input id="reg_email" type="text" name = "email"><br>
+    Email: <input id="reg_email_input" type="text" name = "email"><br>
     Username: <input id="reg_username_input" type="text" name="username"><br>
-    Password: <input id="reg_password_input" type="text" name="password"><br>
+    Password: <input id="reg_password_input" type="password" name="password"><br>
     <div id="reg_button_container">
       <input id="register_button" type="submit" value="Submit">
       <input id="show_login_button" type="submit" value="Back">
@@ -39,6 +39,10 @@
             login.login();
         });
 
+        $("#register_button").click(function(){
+            login.register();
+        });
+
         $("#show_reg_button").click(function(){
             $("#login_div").css("display", "none");
             $("#reg_div").css("display", "block");
@@ -48,6 +52,7 @@
             $("#login_div").css("display", "block");
             $("#reg_div").css("display", "none");
         });
+
     });
 
 </script>
