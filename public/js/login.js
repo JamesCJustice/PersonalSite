@@ -34,13 +34,7 @@ login.register = function(){
     var email = $("#reg_email_input").val();
     var username = $("#reg_username_input").val();
     var password = $("#reg_password_input").val();
-    var password_confirm = $("#reg_password_confirm_input").val();
-
-    if(!validate_reg(email, username, password, password_confirm)){
-        $("#response_div").text("Passwords do not match!");
-        return;
-    }
-
+    
     var data = {
         username: username,
         password: password
@@ -63,12 +57,4 @@ login.register = function(){
             $("#response_div").text(msg);
         }
     });
-}
-
-
-function validate_reg(email, username, password, password_confirm){
-    if(password !== password_confirm){
-        return false;
-    }
-    return true;
 }
