@@ -1,0 +1,1 @@
+curl -X POSt "http://localhost:8080/register?username=d&password=d"

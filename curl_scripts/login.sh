@@ -1,0 +1,1 @@
+curl  -verbose -X POSt "http://localhost:8080/auth?username=d&password=d"
