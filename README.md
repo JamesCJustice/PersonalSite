@@ -6,7 +6,7 @@ A webserver was wasted on merely serving static files, but I'll find some nifty 
 
 # Active Development
 
-
+Finish the auth service
 
 # Candidate Features
 

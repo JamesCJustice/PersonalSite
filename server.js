@@ -116,5 +116,6 @@ function init_profile_db(){
   query += ')';
 
   db.run(query);
+  db.commit();
 });
 }
