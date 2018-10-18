@@ -1,7 +1,8 @@
-var sqlite3 = require('sqlite3').verbose();
-var db = new sqlite3.Database('profile.db');
-var url = require('url');
-var bodyParser = require('body-parser')
+const sqlite3 = require('sqlite3').verbose();
+const db = new sqlite3.Database('profile.db');
+const url = require('url');
+const bodyParser = require('body-parser');
+const crypto = require('crypto');
 
 module.exports = function(app){
 app.use(bodyParser.json())
@@ -63,14 +64,19 @@ app.use(bodyParser.json())
             return;
         }
         
+        const hash = crypto.createHash('sha256');
+        var salt = 'salty';
+        hash.update(password + salt);
+        var hashedPassword = hash.digest('base64');
+
         db.get("SELECT username FROM profile WHERE username = ?", username, function(err, row){
             if(row){
-                console.log("Log");
+                console.log("Duplicate user");
                 res.status(400).json("Username " + username + " already exists.");
             }
             else{
-                var stmt = db.prepare("INSERT INTO profile(username, password) VALUES (?, ?)");
-                stmt.run(username, password, function(err){
+                var stmt = db.prepare("INSERT INTO profile(username, password, salt) VALUES (?, ?, ?)");
+                stmt.run(username, hashedPassword, salt, function(err){
                     console.log("err: " + err);
                     result = {
                         success: 1,
