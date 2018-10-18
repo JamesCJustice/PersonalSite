@@ -104,18 +104,25 @@ function serveFile(file, res){
 
 function init_profile_db(){
   var path = "profile.db";
-  if (fs.existsSync(path)) {
-    return;
-  }
   var db = new sqlite3.Database('profile.db');
-  db.serialize(function() {
+  
+
+  db.get("SELECT username FROM profile", function(err, row){
+    if(err){
+      create_profile_db();
+    }
+  });
+
+}
+
+function create_profile_db(){
+  console.log("profile table doesn't exist. Creating.");
+  var path = "profile.db";
+  var db = new sqlite3.Database('profile.db');
   var query = "";
   query += 'CREATE TABLE profile (';
   query += 'username VARCHAR(255),';
   query += 'password VARCHAR(255)';
   query += ')';
-
   db.run(query);
-  db.commit();
-});
 }

@@ -8,6 +8,9 @@ A webserver was wasted on merely serving static files, but I'll find some nifty 
 
 Finish the auth service
 
+- Make sure profile table is initialized correctly on startup
+- Make sure that the passwords are hashed before they are stored.
+
 # Candidate Features
 
 front-end tasks
