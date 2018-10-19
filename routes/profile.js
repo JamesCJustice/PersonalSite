@@ -3,6 +3,7 @@ const db = new sqlite3.Database('profile.db');
 const url = require('url');
 const bodyParser = require('body-parser');
 const crypto = require('crypto');
+const randomstring = require("randomstring");
 
 module.exports = function(app){
 app.use(bodyParser.json())
@@ -23,27 +24,18 @@ app.use(bodyParser.json())
             return;
         }
 
-        db.get("SELECT username FROM profile WHERE username = ? AND password = ?", username, password, function(err, row){
-            console.log(err  + "," +  row);
-            if(row){
-                result = {
-                    token: "shinynewtoken",
-                    success: 1,
-                    msg: "success"
-                };
-                res.status(200).json(result);
-                return;
-            }
-            else{
-                result = {
-                    success: 0,
-                    msg: "Wrong username or password."
-                };
-                console.log(result["msg"]);
-                res.status(400).json(result);
-            }
+        getProfileByUserName(username).then(function(profile){
+            console.log("profile username" + profile.username);
+            console.log("profile email " + profile.email);
+            console.log("profile pass" + profile.password);
+            console.log("profile salt" + profile.salt);
+            result = {
+                msg: "Hi " + username,
+                success: true
+            };
+            console.log(result["msg"]);
+            res.status(400).json(result);
         });
-
 
 
         //res.status(200).json(result);
@@ -65,7 +57,8 @@ app.use(bodyParser.json())
         }
         
         const hash = crypto.createHash('sha256');
-        var salt = 'salty';
+        var salt = randomstring.generate(8);
+
         hash.update(password + salt);
         var hashedPassword = hash.digest('base64');
 
@@ -96,4 +89,20 @@ app.use(bodyParser.json())
     app.post('/', function(req, res){
         res.send("Cool stuff!");
     });
+
+
+    function getProfileByUserName(username){
+        return new Promise(function(resolve, reject){
+            db.get("SELECT * FROM profile WHERE username = ?", username, function(err, row){
+                if(err){
+                    reject(err);
+                }
+                resolve(row);
+            });
+            
+        });
+        
+    }
+
+
 }
