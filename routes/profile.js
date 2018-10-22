@@ -25,16 +25,35 @@ app.use(bodyParser.json())
         }
 
         getProfileByUserName(username).then(function(profile){
-            console.log("profile username" + profile.username);
-            console.log("profile email " + profile.email);
-            console.log("profile pass" + profile.password);
-            console.log("profile salt" + profile.salt);
-            result = {
-                msg: "Hi " + username,
-                success: true
-            };
-            console.log(result["msg"]);
-            res.status(400).json(result);
+
+            const hash = crypto.createHash('sha256');
+
+            hash.update(password + profile.salt);
+            var hashedPassword = hash.digest('base64');
+            
+            if(hashedPassword === profile.password){
+                result = {
+                    msg: "Authorization successful",
+                    success: true
+                };
+
+                console.log(result["msg"]);
+                res.status(200).json(result);    
+            }
+            else{
+                result = {
+                    msg: "Authorization unsuccessful",
+                    success: false
+                };
+
+                console.log(result["msg"]);
+                res.status(401).json(result);
+            }
+
+            
+        })
+        .catch(function(err){
+            console.log(err);
         });
 
 
@@ -44,12 +63,13 @@ app.use(bodyParser.json())
     app.post('/register_profile', function(req, res){
         var q = url.parse(req.url, true).query;
         var username = req.body.username;
+        var email = req.body.email;
         var password = req.body.password;
         var result;
-        if(!username || !password){
+        if(!username || !password || !email){
             result = {
                 success: 0,
-                msg: "Username or password not specified."
+                msg: "Please fill out all fields."
             };
             console.log(result["msg"]);
             res.status(400).json(result);
@@ -68,8 +88,8 @@ app.use(bodyParser.json())
                 res.status(400).json("Username " + username + " already exists.");
             }
             else{
-                var stmt = db.prepare("INSERT INTO profile(username, password, salt) VALUES (?, ?, ?)");
-                stmt.run(username, hashedPassword, salt, function(err){
+                var stmt = db.prepare("INSERT INTO profile(username, email, password, salt) VALUES (?, ?, ?, ?)");
+                stmt.run(username, email, hashedPassword, salt, function(err){
                     console.log("err: " + err);
                     result = {
                         success: 1,

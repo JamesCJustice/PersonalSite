@@ -122,6 +122,7 @@ function create_profile_db(){
   var query = "";
   query += 'CREATE TABLE profile (';
   query += 'username VARCHAR(255),';
+  query += 'email VARCHAR(255),';
   query += 'password VARCHAR(255),';
   query += 'salt VARCHAR(255)';
   query += ')';
