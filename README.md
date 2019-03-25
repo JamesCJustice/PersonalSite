@@ -4,34 +4,38 @@ This is my personal site, a continuation of the node site I removed from the Man
 A webserver was wasted on merely serving static files, but I'll find some nifty things to do with this one. This website exists for me to practice front-end skills, develop utilities, and try out weird ideas.
 
 
-# Active Development
 
-Finish the auth service
+# /ideaguy/
+Yup, this section is pretty much a pile of checks that I may or may not cash.
+Nice-to-haves and huge scope features as well as poorly-articulated ones go here.
+Now in agile story flavor.
 
-- Make sure profile table is initialized correctly on startup
-- Make sure that the passwords are hashed before they are stored.
+## /about page
+As the site owner, I would like to display a portfolio page showcasing my
+work so that I can show off my obligatory website.
 
-# Candidate Features
+## /profile/<username> page
+As a user, I would like to see a profile page displaying public information
+about other users so that I have a better idea who I'm talking to.
 
-front-end tasks
-- Make portfolio/bio page(s)
-- Polish up pages as they appear
-- Mobile-friendly design
+## /profile/account page
+As a registered user, I would like to be able to edit what information is
+displayed publically on my profile and change other settings.
 
-Backend tasks
-- Registration/login
-- Profile page
-- Message board
-- Chat room
+## password reset flow
+As a returning user who has forgotten his password, I would like to be able
+to have a password reset link sent to my email address so that I can continue
+using the site.
 
-FPS_Project
-- Offer authentication/profile service to servers
-- Backup world data 
-- Browse world map
-- List registered servers and whether they are up
-- Perform non-FPS functions of game using browser
-- Check on status of profile's character on a server
+## chatroom
+As a returning user, I would like to be able to chat with other online users
+in real-time in order to coordinate multiplayer gaming sessions.
 
-ManafestLore
-- Serve up markdown files as HTML in a gallery.
-- Automatically pull the latest changes to ManafestLore daily or with a webhook
+## announcements
+As a site owner, I would like to publicly display announcements so that
+users are aware of updates and changes. 
+
+## server list
+As a host of a multiplayer Manafest game that is using the auth service, I
+would like my server to show up in a list of other servers so that I can 
+attract new players.
