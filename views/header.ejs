@@ -4,19 +4,23 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous">
 </script>
+<head>
+  <link rel="stylesheet" href="/css/styles.css">
+</head>
 
 <body>
-    <div align="left">
+  <div class="row">
+    <div class="cool header_left">
       <a href="/">Home</a>
     </div>
-    <div align="right">
-      <a href="/">Home</a>
+    <div class="cool header_center"><img class="img" src="/img/banner.jpg" alt="Banner"></div>
+    <div class="cool header_right">
       <% if(typeof loggedIn != 'undefined' && loggedIn){ %>
         <a href="/logout">Logout</a>
         <a href="/profile">Profile</a>
       <% } else{ %>
         <a href="/login">Login</a>
       <% } %>
-      <a href="/"></a>
     </div>
+  </div>
 </body>

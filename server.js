@@ -1,14 +1,12 @@
 const express = require('express'),
   app = express(),
   path = require('path'),
-  session = require('express-session');
+  session = require('express-session'),
+  PORT = 8080,
+  dns = require('dns');
 
-var files;
-var LOCAL_ADDRESS;
-var PORT = 8080; 
-
-require('dns').lookup(require('os').hostname(), function (err, add, fam) {
-  LOCAL_ADDRESS = add;
+dns.lookup(require('os').hostname(), function (err, add, fam) {
+  var LOCAL_ADDRESS = add;
   console.log('Hosting on local address: ' + LOCAL_ADDRESS + ":" + PORT);
 });
 
@@ -19,6 +17,10 @@ app.use(session({
 }));
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'ejs');
+
+app.use(express.static('public'));
+app.use('/img', express.static(__dirname + '/img'));
+app.use('/css', express.static(__dirname + '/css'));
 
 require('./routes/profile')(app);
 require('./routes/index')(app);
