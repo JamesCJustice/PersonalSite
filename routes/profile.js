@@ -24,36 +24,39 @@ app.use(bodyParser.json())
             return;
         }
 
-        getProfileByUserName(username).then(function(profile){
+        getProfileByUserName(username)
+        .then(function(profile){
+            if(profile == undefined){
+                return res.status(401).json({
+                    msg: "Authorization unsuccessful",
+                    success: false
+                });
+            }
 
             const hash = crypto.createHash('sha256');
 
             hash.update(password + profile.salt);
             var hashedPassword = hash.digest('base64');
-            
+
+
             if(hashedPassword === profile.password){
-                result = {
+                res.status(200).json({
                     msg: "Authorization successful",
                     success: true
-                };
-
-                console.log(result["msg"]);
-                res.status(200).json(result);    
+                });
             }
             else{
-                result = {
+                return res.status(401).json({
                     msg: "Authorization unsuccessful",
                     success: false
-                };
-
-                console.log(result["msg"]);
-                res.status(401).json(result);
+                });
             }
 
             
         })
         .catch(function(err){
             console.log(err);
+            return res.status(401).json(result);
         });
 
 
