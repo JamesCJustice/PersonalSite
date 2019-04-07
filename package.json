@@ -48,6 +48,7 @@
     "escape-html": "^1.0.3",
     "etag": "^1.8.1",
     "express": "^4.16.4",
+    "express-session": "^1.15.6",
     "extend": "^3.0.2",
     "extsprintf": "^1.4.0",
     "fast-deep-equal": "^2.0.1",

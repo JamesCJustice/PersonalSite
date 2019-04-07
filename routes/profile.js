@@ -1,12 +1,25 @@
-const sqlite3 = require('sqlite3').verbose();
-const db = new sqlite3.Database('profile.db');
-const url = require('url');
-const bodyParser = require('body-parser');
-const crypto = require('crypto');
-const randomstring = require("randomstring");
+const sqlite3 = require('sqlite3').verbose(),
+    db = new sqlite3.Database('profile.db'),
+    url = require('url'),
+    bodyParser = require('body-parser'),
+    crypto = require('crypto'),
+    randomstring = require("randomstring"),
+    fs = require('fs');
 
 module.exports = function(app){
-app.use(bodyParser.json())
+    app.use(bodyParser.json())
+
+    app.get('/login', function(req, res){
+        if(req.session.loggedIn){
+            return res.send("Welcome back, " + req.session.username + "!");
+        }
+
+        fs.readFile('public/html/login.html', function(err, data){
+            res.writeHead(200, {'Content-Type': 'text/html'});
+            res.write(data);
+            res.end();
+        });
+    });
 
     app.post('/authorize_profile', function(req, res){
         var username = req.body.username;
@@ -105,7 +118,7 @@ app.use(bodyParser.json())
                 });
                 stmt.finalize();
 
-                    
+
             };
         });
     });

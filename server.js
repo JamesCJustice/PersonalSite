@@ -23,106 +23,14 @@ app.use(session({
 }));
 
 require('./routes/profile')(app);
+require('./routes/index')(app);
 
 // Init databases
 init_profile_db();
 
-// Index
-app.get('/', function(req, res){
-  let data = {
-    loggedIn: req.session.loggedIn,
-    username: req.session.username
-  };
-  console.log(JSON.stringify(data));
-  ejs.renderFile('public/html/index.html', data, {}, function(err, str){
-    if(err != undefined){
-      console.log(JSON.stringify(err));
-      console.log(str);
-    }
-    return res.send(str);
-  });
-});
-
-// Login
-app.get('/login', function(req, res){
-  if(req.session.loggedIn){
-    return res.send("Welcome back, " + req.session.username + "!");
-  }
-
-  var file = 'public/html/login.html';
-  serveFile(file, res);
-});
-
-// Request arbitrary public file
-app.get('/public', function(req, res){
-  var q = url.parse(req.url, true).query;
-  var file = q.file;
-  console.log("file " + file);
-  
-  file = string_to_file(file);
-  if(file === 'public/html/notfound.html'){
-    console.log("File not found");
-  }
-  serveFile(file, res);
-  
-});
-
-app.get('/public', function(req, res){
-  var q = url.parse(req.url, true).query;
-  var file = q.file;
-  console.log("file " + file);
-  
-  file = string_to_file(file);
-  if(file === 'public/html/notfound.html'){
-    console.log("File not found");
-  }
-  serveFile(file, res);
-  
-});
-
 app.listen(PORT, function(){
  console.log("Listening"); 
 });
-
-function string_to_file(file){
-  if( typeof file === 'undefined' || file === ""){
-    return 'public/html/notfound.html';
-  }
-  else{
-    console.log("File defined as " + file);
-  }
-
-  var path = "public/html/" + file;
-  if (fs.existsSync(path)) {
-    return path;
-  }
-
-  path = "public/js/" + file;
-  if (fs.existsSync(path)) {
-    return path;
-  }  
-
-  return 'public/html/notfound.html';
-}
-
-function getFiles(_path){
-  var path = typeof _path !== 'undefined' ?  _path  : '.';
-  console.log("Path=" + path);
-  fs.readdir(path, function(err, items) {
-    files = items;
-    console.log('found' + files);
-  });
-}
-
-function serveFile(file, res){
-  var _res = res;
-  console.log('Serving file:' + file);
-  fs.readFile(file, function(err, data){
-    _res.writeHead(200, {'Content-Type': 'text/html'});
-    _res.write(data);
-    _res.end();
-  });
-}
 
 function init_profile_db(){
   var path = "profile.db";
