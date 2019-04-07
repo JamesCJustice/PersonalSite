@@ -4,7 +4,8 @@ const http = require('http'),
   express = require('express'),
   app = express(),
   sqlite3 = require('sqlite3').verbose(),
-  session = require('express-session');
+  session = require('express-session')
+  ejs = require('ejs');
 
 var files;
 var LOCAL_ADDRESS;
@@ -28,8 +29,18 @@ init_profile_db();
 
 // Index
 app.get('/', function(req, res){
-  var file = 'public/html/index.html';
-  serveFile(file, res);
+  let data = {
+    loggedIn: req.session.loggedIn,
+    username: req.session.username
+  };
+  console.log(JSON.stringify(data));
+  ejs.renderFile('public/html/index.html', data, {}, function(err, str){
+    if(err != undefined){
+      console.log(JSON.stringify(err));
+      console.log(str);
+    }
+    return res.send(str);
+  });
 });
 
 // Login

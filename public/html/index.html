@@ -8,8 +8,10 @@
 <div id="header_div"></div>
 
 <body>
+    <% if (loggedIn) { %>
+      <h2>Hello, <%= username %>!</h2>
+    <% } %>
     <div id="cool_div">
-    <h1>Hello, world!</h1>
 
     Hey there. This is my personal site.
     Check back much later for content.
