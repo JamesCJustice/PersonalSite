@@ -105,17 +105,12 @@ module.exports = function(app){
             else{
                 var stmt = db.prepare("INSERT INTO profile(username, email, password, salt) VALUES (?, ?, ?, ?)");
                 stmt.run(username, email, hashedPassword, salt, function(err){
-                    console.log("err: " + err);
-                    result = {
+                    res.status(200).json({
                         success: 1,
                         msg: "Registered " + username
-                    };
-                    console.log(result["msg"]);
-                    res.status(200).json(result);
+                    });
                 });
                 stmt.finalize();
-
-
             };
         });
     });
