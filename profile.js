@@ -8,6 +8,7 @@ module.exports = {
       var db = new sqlite3.Database('profile.db');
       var query = "";
       query += 'CREATE TABLE IF NOT EXISTS profile (';
+      query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
       query += 'username VARCHAR(255),';
       query += 'email VARCHAR(255),';
       query += 'password VARCHAR(255),';
@@ -35,14 +36,27 @@ module.exports = {
   },
 
   getProfileByUsername: function (username){
-        return new Promise(function(resolve, reject){
-            db.get("SELECT * FROM profile WHERE username = ?", username, function(err, row){
-                if(err){
-                    reject(err);
-                }
-                resolve(row);
-            });
-            
-        });
-    }
+      return new Promise(function(resolve, reject){
+          db.get("SELECT * FROM profile WHERE username = ?", username, function(err, row){
+              if(err){
+                  reject(err);
+              }
+              resolve(row);
+          });
+          
+      });
+  },
+
+  getProfileById: function (id){
+      return new Promise(function(resolve, reject){
+          db.get("SELECT * FROM profile WHERE id = ?", id, function(err, row){
+              if(err){
+                  reject(err);
+              }
+              resolve(row);
+          });
+          
+      });
+  },
+
 };

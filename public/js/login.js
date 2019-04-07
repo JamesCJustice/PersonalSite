@@ -18,8 +18,11 @@ login.login = function(){
         contentType: "application/json; charset=utf-8",
         dataType: 'json',
         success: function(resp) {
+            console.log("Succes");
             $("#response_div").text(resp.msg);
             $("#login_div").css("display: none");
+            console.log("success");
+            window.location.href = resp.redirect;
         },
         error: function(error){
             var responseJSON = error.responseJSON;
@@ -29,7 +32,6 @@ login.login = function(){
     });
 }
 
-//TODO: Finish this
 login.register = function(){
     var email = $("#reg_email_input").val();
     var username = $("#reg_username_input").val();

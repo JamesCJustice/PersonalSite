@@ -1,5 +1,6 @@
 const sqlite3 = require('sqlite3').verbose(),
     url = require('url'),
+    userAuthenticated = require('../middleware/userAuthenticated'),
     bodyParser = require('body-parser'),
     crypto = require('crypto'),
     randomstring = require("randomstring"),
@@ -19,6 +20,16 @@ module.exports = function(app){
         res.render('login');
     });
 
+    app.get('/profile/:id', userAuthenticated, function(req, res){
+        return profile.getProfileById(req.params.id)
+        .then(function(profile){
+            let data = {
+                username: profile.username
+            };   
+            res.render('profile', data);    
+        });
+    });
+
     app.post('/authorize_profile', function(req, res){
         var username = req.body.username;
         var password = req.body.password;
@@ -26,12 +37,10 @@ module.exports = function(app){
         var result = {};
 
         if( !username || !password){
-            result = {
+            res.status(400).json({
                 msg: "Missing username or password",
                 success: false
-            };
-            console.log(result["msg"]);
-            res.status(400).json(result);
+            });
             return;
         }
 
@@ -53,10 +62,12 @@ module.exports = function(app){
             if(hashedPassword === profile.password){
                 req.session.loggedIn = true;
                 req.session.username = profile.username;
-                res.status(200).json({
+                return res.status(200).json({
                     msg: "Authorization successful",
-                    success: true
+                    success: true,
+                    redirect: '/'
                 });
+
             }
             else{
                 return res.status(401).json({
