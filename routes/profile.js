@@ -1,10 +1,11 @@
 const sqlite3 = require('sqlite3').verbose(),
-    db = new sqlite3.Database('profile.db'),
     url = require('url'),
     bodyParser = require('body-parser'),
     crypto = require('crypto'),
     randomstring = require("randomstring"),
-    fs = require('fs');
+    fs = require('fs'),
+    db = new sqlite3.Database('profile.db'),
+    profile = require('../profile');
 
 module.exports = function(app){
     app.use(bodyParser.json())
@@ -37,7 +38,7 @@ module.exports = function(app){
             return;
         }
 
-        getProfileByUserName(username)
+        profile.getProfileByUsername(username)
         .then(function(profile){
             if(profile == undefined){
                 return res.status(401).json({
@@ -96,7 +97,6 @@ module.exports = function(app){
 
         hash.update(password + salt);
         var hashedPassword = hash.digest('base64');
-
         db.get("SELECT username FROM profile WHERE username = ?", username, function(err, row){
             if(row){
                 console.log("Duplicate user");
@@ -119,25 +119,6 @@ module.exports = function(app){
             };
         });
     });
-
-
-    app.post('/', function(req, res){
-        res.send("Cool stuff!");
-    });
-
-
-    function getProfileByUserName(username){
-        return new Promise(function(resolve, reject){
-            db.get("SELECT * FROM profile WHERE username = ?", username, function(err, row){
-                if(err){
-                    reject(err);
-                }
-                resolve(row);
-            });
-            
-        });
-        
-    }
 
 
 }

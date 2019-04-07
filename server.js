@@ -4,8 +4,9 @@ const http = require('http'),
   express = require('express'),
   app = express(),
   sqlite3 = require('sqlite3').verbose(),
-  session = require('express-session')
-  ejs = require('ejs');
+  session = require('express-session'),
+  ejs = require('ejs'),
+  profile = require('./profile');
 
 var files;
 var LOCAL_ADDRESS;
@@ -25,36 +26,8 @@ app.use(session({
 require('./routes/profile')(app);
 require('./routes/index')(app);
 
-// Init databases
-init_profile_db();
-
 app.listen(PORT, function(){
  console.log("Listening"); 
 });
 
-function init_profile_db(){
-  var path = "profile.db";
-  var db = new sqlite3.Database('profile.db');
-  
-
-  db.get("SELECT username FROM profile", function(err, row){
-    if(err){
-      create_profile_db();
-    }
-  });
-
-}
-
-function create_profile_db(){
-  console.log("profile table doesn't exist. Creating.");
-  var path = "profile.db";
-  var db = new sqlite3.Database('profile.db');
-  var query = "";
-  query += 'CREATE TABLE profile (';
-  query += 'username VARCHAR(255),';
-  query += 'email VARCHAR(255),';
-  query += 'password VARCHAR(255),';
-  query += 'salt VARCHAR(255)';
-  query += ')';
-  db.run(query);
-}
+profile.install();
