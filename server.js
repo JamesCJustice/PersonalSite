@@ -1,12 +1,6 @@
-const http = require('http'),
-  url = require('url'),
-  fs = require('fs'),
-  express = require('express'),
+const express = require('express'),
   app = express(),
-  sqlite3 = require('sqlite3').verbose(),
-  session = require('express-session'),
-  ejs = require('ejs'),
-  profile = require('./profile');
+  session = require('express-session');
 
 var files;
 var LOCAL_ADDRESS;
@@ -29,5 +23,3 @@ require('./routes/index')(app);
 app.listen(PORT, function(){
  console.log("Listening"); 
 });
-
-profile.install();
