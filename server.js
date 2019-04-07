@@ -1,11 +1,12 @@
-var http = require('http');
-var url = require('url');
-var fs = require('fs');
-var files;
-const express = require('express')
-const app = express()
-var sqlite3 = require('sqlite3').verbose();
+const http = require('http'),
+  url = require('url'),
+  fs = require('fs'),
+  express = require('express'),
+  app = express(),
+  sqlite3 = require('sqlite3').verbose(),
+  session = require('express-session');
 
+var files;
 var LOCAL_ADDRESS;
 var PORT = 8080; 
 
@@ -13,6 +14,12 @@ require('dns').lookup(require('os').hostname(), function (err, add, fam) {
   LOCAL_ADDRESS = add;
   console.log('Hosting on local address: ' + LOCAL_ADDRESS + ":" + PORT);
 });
+
+app.use(session({
+  secret: "Ravioli, ravioli, give me the securioli!",
+  resave: false,
+  saveUninitialized: false
+}));
 
 require('./routes/profile')(app);
 
@@ -27,6 +34,10 @@ app.get('/', function(req, res){
 
 // Login
 app.get('/login', function(req, res){
+  if(req.session.loggedIn){
+    return res.send("Welcome back, " + req.session.username + "!");
+  }
+
   var file = 'public/html/login.html';
   serveFile(file, res);
 });

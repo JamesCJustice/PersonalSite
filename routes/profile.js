@@ -11,7 +11,7 @@ app.use(bodyParser.json())
     app.post('/authorize_profile', function(req, res){
         var username = req.body.username;
         var password = req.body.password;
-        console.log("Received " + username + " and " + password);
+
         var result = {};
 
         if( !username || !password){
@@ -28,7 +28,7 @@ app.use(bodyParser.json())
         .then(function(profile){
             if(profile == undefined){
                 return res.status(401).json({
-                    msg: "Authorization unsuccessful",
+                    msg: "Authorization unsuccessful. User " + username + " doesn't exist.",
                     success: false
                 });
             }
@@ -40,6 +40,8 @@ app.use(bodyParser.json())
 
 
             if(hashedPassword === profile.password){
+                req.session.loggedIn = true;
+                req.session.username = profile.username;
                 res.status(200).json({
                     msg: "Authorization successful",
                     success: true
