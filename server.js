@@ -1,5 +1,6 @@
 const express = require('express'),
   app = express(),
+  path = require('path'),
   session = require('express-session');
 
 var files;
@@ -16,9 +17,16 @@ app.use(session({
   resave: false,
   saveUninitialized: false
 }));
+app.set('views', path.join(__dirname, 'views'));
+app.set('view engine', 'ejs');
 
 require('./routes/profile')(app);
 require('./routes/index')(app);
+
+app.get('*', function(req, res){
+  res.render('notFound');
+});
+
 
 app.listen(PORT, function(){
  console.log("Listening"); 

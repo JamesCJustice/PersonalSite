@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous">
+</script>
+
+<body>
+    <div align="left">
+      <a href="/">Home</a>
+    </div>
+    <div align="right">
+      <a href="/">Home</a>
+      <% if(typeof loggedIn != 'undefined' && loggedIn){ %>
+        <a href="/logout">Logout</a>
+        <a href="/profile">Profile</a>
+      <% } else{ %>
+        <a href="/login">Login</a>
+      <% } %>
+      <a href="/"></a>
+    </div>
+</body>

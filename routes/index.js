@@ -2,7 +2,8 @@
 module.exports = function(app){
   const fs = require('fs'),
     userAuthenticated = require('../middleware/userAuthenticated'),
-    url = require('url');
+    url = require('url'),
+    ejs = require('ejs');
 
   app.get('/', userAuthenticated, function(req, res){
     let data = {
@@ -10,13 +11,7 @@ module.exports = function(app){
       username: req.session.username
     };
 
-    ejs.renderFile('public/html/index.html', data, {}, function(err, str){
-      if(err != undefined){
-        console.log(JSON.stringify(err));
-        console.log(str);
-      }
-      return res.send(str);
-    });
+    res.render('index', data);
   });
 
   // Request arbitrary public file

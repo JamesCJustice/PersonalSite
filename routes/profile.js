@@ -5,21 +5,18 @@ const sqlite3 = require('sqlite3').verbose(),
     randomstring = require("randomstring"),
     fs = require('fs'),
     db = new sqlite3.Database('profile.db'),
-    profile = require('../profile');
+    profile = require('../profile'),
+    ejs = require('ejs');
 
 module.exports = function(app){
-    app.use(bodyParser.json())
+    app.use(bodyParser.json());
 
     app.get('/login', function(req, res){
         if(req.session.loggedIn){
             return res.send("Welcome back, " + req.session.username + "!");
         }
 
-        fs.readFile('public/html/login.html', function(err, data){
-            res.writeHead(200, {'Content-Type': 'text/html'});
-            res.write(data);
-            res.end();
-        });
+        res.render('login');
     });
 
     app.post('/authorize_profile', function(req, res){

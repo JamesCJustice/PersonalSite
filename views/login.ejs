@@ -4,9 +4,8 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous">
 </script>
-<script src="public?file=header.js"></script>
 <script src="public?file=login.js"></script>
-<div id="header_div"></div>
+<% include header %>
 <div id="response_div"></div>
 
 <h2>Login Page</h2>
@@ -30,10 +29,8 @@
     </div>
 </div>
 
-
 <script>
     $(document).ready(function(){
-         header.populate();
 
         $("#login_button").click(function(){
             login.login();
