@@ -73,9 +73,6 @@ module.exports = function(app){
             console.log(err);
             return res.status(401).json(result);
         });
-
-
-        //res.status(200).json(result);
     });
 
     app.post('/register_profile', function(req, res){

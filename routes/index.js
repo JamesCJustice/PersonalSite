@@ -9,7 +9,7 @@ module.exports = function(app){
       loggedIn: req.session.loggedIn,
       username: req.session.username
     };
-    console.log(JSON.stringify(data));
+
     ejs.renderFile('public/html/index.html', data, {}, function(err, str){
       if(err != undefined){
         console.log(JSON.stringify(err));
