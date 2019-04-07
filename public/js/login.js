@@ -52,6 +52,7 @@ login.register = function(){
         success: function(resp) {
             $("#response_div").text("Registration successful!");
             $("#login_div").css("display: none");
+            window.location.href = resp.redirect;
         },
         error: function(error){
             var responseJSON = error.responseJSON;

@@ -99,27 +99,23 @@ module.exports = function(app){
             res.status(400).json(result);
             return;
         }
-        
-        const hash = crypto.createHash('sha256');
-        var salt = randomstring.generate(8);
 
-        hash.update(password + salt);
-        var hashedPassword = hash.digest('base64');
-        db.get("SELECT username FROM profile WHERE username = ?", username, function(err, row){
-            if(row){
-                console.log("Duplicate user");
-                res.status(400).json("Username " + username + " already exists.");
-            }
-            else{
-                var stmt = db.prepare("INSERT INTO profile(username, email, password, salt) VALUES (?, ?, ?, ?)");
-                stmt.run(username, email, hashedPassword, salt, function(err){
-                    res.status(200).json({
-                        success: 1,
-                        msg: "Registered " + username
-                    });
-                });
-                stmt.finalize();
-            };
+        return profile.createProfile({
+            username: username,
+            password: password
+        })
+        .then(function(){
+            return res.status(201).json({
+                success: 1,
+                msg: "User registered successfully.",
+                redirect: "/login"
+            });
+        })
+        .catch(function(err){
+            return res.status(400).json({
+                success: 0,
+                msg: err
+            });
         });
     });
 
