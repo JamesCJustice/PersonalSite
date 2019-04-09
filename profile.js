@@ -125,21 +125,6 @@ module.exports = {
   },
 
   updateProfileExtra: function(id, extra){
-    // let rows = Object.keys(extra).map((key) => [id, key, extra[key]]);
-    // let sql = 'INSERT INTO profile_extra(profile_id, name, value) VALUES (?,?,?);';
-    // console.log(sql);
-    // console.log(JSON.stringify(rows));
-    // return new Promise(function(resolve, reject){
-    //   rows.forEach(function(row){
-    //     db.run(sql, row[0], row[1], row[2], function(err) {
-    //       if (err) {
-    //         reject(err);
-    //       }
-    //       resolve();
-    //     });  
-    //   });
-    // });
-
     let rows = [];
     Object.keys(extra).forEach(function(key){
       rows.push({
