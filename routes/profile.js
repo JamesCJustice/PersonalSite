@@ -20,6 +20,12 @@ module.exports = function(app){
         res.render('login');
     });
 
+    app.get('/logout', function(req, res){
+        req.session.loggedIn = false;
+        req.session.username = "";
+        return res.redirect('/login');
+    });
+
     app.get('/profile/:id', userAuthenticated, function(req, res){
         return profile.getProfileById(req.params.id)
         .then(function(profile){
@@ -61,7 +67,7 @@ module.exports = function(app){
         });
     });
 
-    app.post('/authorize_profile', function(req, res){
+    app.post('/login', function(req, res){
         var username = req.body.username;
         var password = req.body.password;
 

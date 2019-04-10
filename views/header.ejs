@@ -16,8 +16,8 @@
     <div class="header_center"><img class="img" src="/img/banner.jpg" alt="Banner"></div>
     <div class="header_right">
       <% if(typeof loggedIn != 'undefined' && loggedIn){ %>
-        <a href="/logout">Logout</a>
         <a href="/edit/profile">Profile</a>
+        <a href="/logout">Logout</a>
       <% } else{ %>
         <a href="/login">Login</a>
       <% } %>
