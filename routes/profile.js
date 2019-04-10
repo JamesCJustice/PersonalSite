@@ -27,6 +27,32 @@ module.exports = function(app){
                 username: profile.username
             };   
             res.render('profile', data);    
+        })
+        .catch(function(err){
+            return 
+        });
+    });
+
+    app.get('/edit/profile', userAuthenticated, function(req, res){
+        return profile.getProfileExtra(req.session.id)
+        .then(function(extra){
+            let data = {};
+            data['username'] = req.session.username;
+            data['extra'] = extra;
+            console.log('data: ' + JSON.stringify(data) );
+            res.render('edit_profile', data);
+        });
+    });
+
+    app.post('/edit/profile/', userAuthenticated, function(req, res){
+        let profileExtra = profile.readProfileExtraFromRequest(req);
+        return profile.updateProfileExtra(req.params.id, profileExtra)
+        .then(function(){
+            res.status(200).json({
+                msg: "Profile update successful",
+                success: true,
+                redirect: '/profile/' + req.params.id
+            });
         });
     });
 
@@ -62,6 +88,7 @@ module.exports = function(app){
             if(hashedPassword === profile.password){
                 req.session.loggedIn = true;
                 req.session.username = profile.username;
+                # TODO: Put id in session here here
                 return res.status(200).json({
                     msg: "Authorization successful",
                     success: true,

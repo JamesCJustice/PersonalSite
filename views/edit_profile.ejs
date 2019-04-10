@@ -1,0 +1,16 @@
+<!DOCTYPE html>
+<script
+  src="https://code.jquery.com/jquery-3.3.1.min.js"
+  integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
+  crossorigin="anonymous">
+</script>
+<% include header %>
+
+<div class="cool">
+
+  This is <%= username %>'s profile!
+  <% for (var key in extra) { %>
+    <%= key %>:<%= extra[key]%><br>
+  <% } %>
+
+</div>

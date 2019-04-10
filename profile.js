@@ -148,5 +148,24 @@ module.exports = {
     });
   },
   
+  readProfileExtraFromRequest: function (req){
+    let request = req.extra;
+    let profile_extra = {};
+    const validFieldNames = getValidFieldNames();
+    Object.keys(request).forEach(function(key){
+      if(validFieldNames.indexOf(key) != -1){
+        profile_extra[key] = request[key];
+      }
+    });
 
+    return profile_extra;
+  },
+
+  getValidFieldNames: function (){
+    return [
+      'favorite color',
+      'favorite band',
+      'hours spent asleep in elevator'
+    ];
+  },
 };
