@@ -34,19 +34,24 @@ module.exports = function(app){
     });
 
     app.get('/edit/profile', userAuthenticated, function(req, res){
-        return profile.getProfileExtra(req.session.id)
+        return profile.getProfileExtra(req.session.profile_id)
         .then(function(extra){
             let data = {};
+
             data['username'] = req.session.username;
-            data['extra'] = extra;
-            console.log('data: ' + JSON.stringify(data) );
+            let visibleExtra = {};
+            profile.getValidFieldNames().forEach(function(field){
+                visibleExtra[field] = extra[field] || "";
+            });
+            data['extra'] = visibleExtra;
             res.render('edit_profile', data);
         });
     });
 
     app.post('/edit/profile/', userAuthenticated, function(req, res){
         let profileExtra = profile.readProfileExtraFromRequest(req);
-        return profile.updateProfileExtra(req.params.id, profileExtra)
+
+        return profile.updateProfileExtra(req.session.profile_id, profileExtra)
         .then(function(){
             res.status(200).json({
                 msg: "Profile update successful",
@@ -71,8 +76,8 @@ module.exports = function(app){
         }
 
         profile.getProfileByUsername(username)
-        .then(function(profile){
-            if(profile == undefined){
+        .then(function(userProfile){
+            if(userProfile == undefined){
                 return res.status(401).json({
                     msg: "Authorization unsuccessful. User " + username + " doesn't exist.",
                     success: false
@@ -81,14 +86,13 @@ module.exports = function(app){
 
             const hash = crypto.createHash('sha256');
 
-            hash.update(password + profile.salt);
+            hash.update(password + userProfile.salt);
             var hashedPassword = hash.digest('base64');
 
-
-            if(hashedPassword === profile.password){
+            if(hashedPassword === userProfile.password){
                 req.session.loggedIn = true;
-                req.session.username = profile.username;
-                # TODO: Put id in session here here
+                req.session.username = userProfile.username;
+                req.session.profile_id = userProfile.id
                 return res.status(200).json({
                     msg: "Authorization successful",
                     success: true,

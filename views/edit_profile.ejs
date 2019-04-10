@@ -4,13 +4,48 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous">
 </script>
+<script type="text/javascript" src="../js/edit_profile.js"></script>
 <% include header %>
 
-<div class="cool">
-
-  This is <%= username %>'s profile!
-  <% for (var key in extra) { %>
-    <%= key %>:<%= extra[key]%><br>
+<br><br><br><br><br><br><br>
+<section id="display_section" class="panel">
+  <strong>Your Profile</strong>
+  <br><br><br>
+  <% for (var key in extra) { %>    
+    <label><strong><%= key %>:&nbsp;</strong></label><%= extra[key]%>
+    <br>
   <% } %>
+  <button id="show_edit_button">Edit</button>
+</section>
 
-</div>
+<section id="edit_section" style="display: none" class="panel">
+  This is <%= username %>'s profile!
+  <% for (var key in extra) { %> 
+    <div class="row">
+        <div class="field_left"><label><strong><%= key %>:&nbsp;</strong></label></div>
+        <div class="field_right"><input name="<%= key %>"><%= extra[key]%></input></div><br><br>
+    </div>
+  <% } %>
+  <div>
+    <button id="show_display_button">Cancel</button>
+    <input id="update_button" type="submit" value="Update">
+  </div>
+</section>
+
+<script>
+    $(document).ready(function(){
+        $("#show_edit_button").click(function(){
+            $("#display_section").css("display", "none");
+            $("#edit_section").css("display", "block");
+        });
+
+        $("#show_display_button").click(function(){
+            $("#display_section").css("display", "block");
+            $("#edit_section").css("display", "none");
+        });
+
+        $("#update_button").click(function(){
+            edit_profile.submit();
+        });
+    });
+</script>

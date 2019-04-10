@@ -3,7 +3,17 @@
   background-color: black;
 }
 
+.panel {
+  background-color: black;
+}
+
 body {
+  color: red;
+  background-color: black;
+  background-image: linear-gradient(to right, black, #191818, #383434, #777171);
+}
+
+label {
   color: red;
   background-color: black;
 }
@@ -23,11 +33,22 @@ body {
   width: 10%;
 }
 
+.field_left {
+  float: left;
+  width: 20%;
+}
+
+.field_right {
+  float: left;
+  width: 80%;
+}
+
 .row:after {
   content: "";
   display: table;
   clear: both;
 }
+
 
 .img {
   max-width:100%;
