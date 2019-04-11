@@ -75,8 +75,16 @@ module.exports = function(app){
         .catch(function(err){
             return res.status(401).json({
                 msg: err,
-                success: false
+                success: false,
+                redirect: '/profile/edit/'
             });
+        });
+    });
+
+    app.post('/profile/password/update', userAuthenticated, function(req, res){
+        return res.status(200).json({
+            msg: 'IMPLEMENT ME, PLEASE',
+            success: true
         });
     });
 

@@ -32,6 +32,30 @@
   </div>
 </section>
 
+<br><br><br>
+
+<input id="edit_password_button" type="submit" value="Update Password">
+<section id="update_password_section" style="display: none" class="panel">
+  Password update
+    <div class="row">
+        <div class="field_left"><label><strong>Current Password:&nbsp;</strong></label></div>
+        <div class="pass field_right"><input id="old_pass" name="current_pass" type="password"></input></div><br><br>
+    </div>
+    <div class="row">
+        <div class="field_left"><label><strong>New Password:&nbsp;</strong></label></div>
+        <div class="pass field_right"><input id="new_pass" name="new_pass" type="password"></input></div><br><br>
+    </div>
+    <div class="row">
+        <div class="field_left"><label><strong>New password(Confirm):&nbsp;</strong></label></div>
+        <div class="pass field_right"><input id="confirm_pass" name="confirm_pass" type="password"></input></div><br><br>
+    </div>
+  <div>
+    <button id="hide_password_update_button">Cancel</button>
+    <input id="update_password_button" type="submit" value="Update">
+  </div>
+</section>
+
+
 <script>
     $(document).ready(function(){
         $("#show_edit_button").click(function(){
@@ -46,6 +70,20 @@
 
         $("#update_button").click(function(){
             edit_profile.submit();
+        });
+
+        $("#edit_password_button").click(function(){
+            $("#update_password_section").css("display", "block");
+            $("#edit_password_button").css("display", "none");
+        });
+
+        $("#hide_password_update_button").click(function(){
+            $("#update_password_section").css("display", "none");
+            $("#edit_password_button").css("display", "block");
+        });
+
+        $("#update_password_button").click(function(){
+            edit_profile.update_password();
         });
     });
 </script>
