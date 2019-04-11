@@ -6,7 +6,13 @@
 </script>
 <% include header %>
 
-<div class="cool">
-
-  This is <%= username %>'s profile!
+<div>
+  <strong>This is <%= displayedUser %>'s profile!</strong>
 </div>
+<section id="display_section" class="panel">
+  <br><br><br>
+  <% for (var key in extra) { %>    
+    <label><strong><%= key %>:&nbsp;</strong></label><%= extra[key]%>
+    <br>
+  <% } %>
+</section>

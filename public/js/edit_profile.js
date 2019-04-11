@@ -9,15 +9,15 @@ edit_profile.submit = function(){
 
   $.ajax({
       type: 'POST',
-      url: "/edit/profile",
+      url: "/profile/edit",
       data: JSON.stringify(data),
       contentType: "application/json; charset=utf-8",
       dataType: 'json',
       success: function(resp) {
-          console.log("success!");
+        window.location.href = resp.redirect;
       },
       error: function(error){
-          console.log(error);
+        console.log(error);
       }
   });
 

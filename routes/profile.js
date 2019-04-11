@@ -7,10 +7,13 @@ const sqlite3 = require('sqlite3').verbose(),
     fs = require('fs'),
     db = new sqlite3.Database('profile.db'),
     profile = require('../profile'),
-    ejs = require('ejs');
+    ejs = require('ejs'),
+    getHeaderData = require('../middleware/getHeaderData');
 
 module.exports = function(app){
     app.use(bodyParser.json());
+    console.log(JSON.stringify(getHeaderData));
+    app.use(getHeaderData);
 
     app.get('/login', function(req, res){
         if(req.session.loggedIn){
@@ -26,26 +29,31 @@ module.exports = function(app){
         return res.redirect('/login');
     });
 
-    app.get('/profile/:id', userAuthenticated, function(req, res){
+    app.get('/profile/view/:id', userAuthenticated, function(req, res){
+        let data = req.headerData;
+
         return profile.getProfileById(req.params.id)
-        .then(function(profile){
-            let data = {
-                username: profile.username
-            };   
-            res.render('profile', data);    
+        .then(function(prof){
+            if(typeof prof === "undefined"){
+                return res.render('notFound');
+            }
+            data['displayedUser'] = prof.username;   
+            return profile.getProfileExtra(req.params.id);
+        })
+        .then(function(extra){
+            data['extra'] = profile.filterExtra(extra);
+            return res.render('profile', data);
         })
         .catch(function(err){
-            return 
+            return new Error(err);
         });
     });
 
-    app.get('/edit/profile', userAuthenticated, function(req, res){
+    app.get('/profile/edit', userAuthenticated, function(req, res){
         return profile.getProfileExtra(req.session.profile_id)
         .then(function(extra){
-            let data = {};
-
-            data['username'] = req.session.username;
-            let visibleExtra = {};
+            let data = req.headerData;
+            let visibleExtra = profile.filterExtra(extra);
             profile.getValidFieldNames().forEach(function(field){
                 visibleExtra[field] = extra[field] || "";
             });
@@ -54,15 +62,20 @@ module.exports = function(app){
         });
     });
 
-    app.post('/edit/profile/', userAuthenticated, function(req, res){
-        let profileExtra = profile.readProfileExtraFromRequest(req);
-
+    app.post('/profile/edit', userAuthenticated, function(req, res){
+        let profileExtra = profile.filterExtra(req.body.extra);
         return profile.updateProfileExtra(req.session.profile_id, profileExtra)
         .then(function(){
             res.status(200).json({
                 msg: "Profile update successful",
                 success: true,
-                redirect: '/profile/' + req.params.id
+                redirect: '/profile/view/' + req.session.profile_id
+            });
+        })
+        .catch(function(err){
+            return res.status(401).json({
+                msg: err,
+                success: false
             });
         });
     });
@@ -155,6 +168,5 @@ module.exports = function(app){
             });
         });
     });
-
 
 }

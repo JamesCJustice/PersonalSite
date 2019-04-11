@@ -22,6 +22,7 @@ app.use(express.static('public'));
 app.use('/img', express.static(__dirname + '/img'));
 app.use('/css', express.static(__dirname + '/css'));
 
+
 require('./routes/profile')(app);
 require('./routes/index')(app);
 

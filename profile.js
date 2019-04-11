@@ -142,23 +142,23 @@ function updateProfileExtra(id, extra){
           if (err) {
             reject(err);
           }
-          resolve();
-        });  
+        });
+      resolve();  
     });
   });
 }
 
-function readProfileExtraFromRequest(req){
-  let request = req.extra;
-  let profile_extra = {};
-  const validFieldNames = getValidFieldNames();
-  Object.keys(request).forEach(function(key){
+// Only show fields we want visible on the front end.
+function filterExtra(extra){
+  let ret = {};
+  let validFieldNames = getValidFieldNames();
+  Object.keys(extra).forEach(function(key){
     if(validFieldNames.indexOf(key) != -1){
-      profile_extra[key] = request[key];
+      ret[key] = extra[key];
     }
   });
 
-  return profile_extra;
+  return ret;
 }
 
 function getValidFieldNames(){
@@ -177,6 +177,6 @@ module.exports = {
   getProfileExtra: getProfileExtra,
   createProfile: createProfile,
   updateProfileExtra: updateProfileExtra,
-  readProfileExtraFromRequest: getValidFieldNames,
-  getValidFieldNames: getValidFieldNames
+  getValidFieldNames: getValidFieldNames,
+  filterExtra: filterExtra
 };
