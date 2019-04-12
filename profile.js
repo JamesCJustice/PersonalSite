@@ -148,6 +148,34 @@ function updateProfileExtra(id, extra){
   });
 }
 
+function authenticateUser(username, pass){
+  return getProfileByUsername(username)
+  .then(function(userProfile){
+    if(userProfile == undefined){
+        return res.status(401).json({
+            msg: "Authorization unsuccessful. User " + username + " doesn't exist.",
+            success: false
+        });
+    }
+
+    const hash = crypto.createHash('sha256');
+
+    hash.update(pass + userProfile.salt);
+    var hashedPassword = hash.digest('base64');
+
+    if(hashedPassword === userProfile.password){
+        return userProfile;
+    }
+    else{
+        return false;
+    }
+  })
+  .catch(function(err){
+      console.log(err);
+      return false;
+  });
+}
+
 // Only show fields we want visible on the front end.
 function filterExtra(extra){
   let ret = {};
@@ -178,5 +206,6 @@ module.exports = {
   createProfile: createProfile,
   updateProfileExtra: updateProfileExtra,
   getValidFieldNames: getValidFieldNames,
-  filterExtra: filterExtra
+  filterExtra: filterExtra,
+  authenticateUser: authenticateUser
 };

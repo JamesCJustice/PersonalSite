@@ -82,6 +82,19 @@ module.exports = function(app){
     });
 
     app.post('/profile/password/update', userAuthenticated, function(req, res){
+        let newPass = req.body.newPass;
+        let confirmPass = req.body.confirmPass;
+        if (newPass !== confirmPass) {
+            return res.status(400).json({
+                msg: 'Passwords do not match',
+                success: false
+            }); 
+        }
+
+        if (req.session.profile_id) {
+
+        }
+
         return res.status(200).json({
             msg: 'IMPLEMENT ME, PLEASE',
             success: true
@@ -101,44 +114,22 @@ module.exports = function(app){
             });
             return;
         }
-
-        profile.getProfileByUsername(username)
-        .then(function(userProfile){
-            if(userProfile == undefined){
-                return res.status(401).json({
-                    msg: "Authorization unsuccessful. User " + username + " doesn't exist.",
-                    success: false
-                });
-            }
-
-            const hash = crypto.createHash('sha256');
-
-            hash.update(password + userProfile.salt);
-            var hashedPassword = hash.digest('base64');
-
-            if(hashedPassword === userProfile.password){
-                req.session.loggedIn = true;
-                req.session.username = userProfile.username;
-                req.session.profile_id = userProfile.id
+        profile.authenticateUser(username, password)
+        .then(function(authenticatedProfile){
+            if(authenticatedProfile){
+                req.session.loggedIn = 1;
+                req.session.username = authenticatedProfile.username;
+                req.session.profile_id = authenticatedProfile.id
                 return res.status(200).json({
                     msg: "Authorization successful",
                     success: true,
                     redirect: '/'
                 });
-
             }
-            else{
-                return res.status(401).json({
-                    msg: "Authorization unsuccessful",
-                    success: false
-                });
-            }
-
-            
-        })
-        .catch(function(err){
-            console.log(err);
-            return res.status(401).json(result);
+            return res.status(401).json({
+                msg: "Authorization unsuccessful",
+                success: false
+            });
         });
     });
 
