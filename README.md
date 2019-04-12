@@ -14,19 +14,6 @@ Now in agile story flavor.
 As the site owner, I would like to display a portfolio page showcasing my
 work so that I can show off my obligatory website.
 
-## /profile/<username> page
-As a user, I would like to see a profile page displaying public information
-about other users so that I have a better idea who I'm talking to.
-
-## /profile/account page
-As a registered user, I would like to be able to edit what information is
-displayed publically on my profile and change other settings.
-
-## password reset flow
-As a returning user who has forgotten his password, I would like to be able
-to have a password reset link sent to my email address so that I can continue
-using the site.
-
 ## chatroom
 As a returning user, I would like to be able to chat with other online users
 in real-time in order to coordinate multiplayer gaming sessions.
