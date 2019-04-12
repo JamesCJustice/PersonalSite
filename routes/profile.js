@@ -91,13 +91,25 @@ module.exports = function(app){
             }); 
         }
 
-        if (req.session.profile_id) {
-
-        }
-
-        return res.status(200).json({
-            msg: 'IMPLEMENT ME, PLEASE',
-            success: true
+        return profile.authenticateUser(req.session.username, req.body.currentPass)
+        .then(function(authedUser){
+            if(!authedUser){
+                throw new Error('Auth failed');
+            }
+            return profile.updatePassword(authedUser, newPass);
+        })
+        .then(function(){
+            return res.status(200).json({
+                msg: "Profile update successful",
+                success: true,
+                redirect: '/profile/view/' + req.session.profile_id
+            });
+        })
+        .catch(function(err){
+            return res.status(500).json({
+                msg: 'Internal error',
+                success: false
+            }); 
         });
     });
 

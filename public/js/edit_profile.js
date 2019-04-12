@@ -41,7 +41,7 @@ edit_profile.update_password = function(){
       contentType: "application/json; charset=utf-8",
       dataType: 'json',
       success: function(resp) {
-        //window.location.href = resp.redirect;
+        window.location.href = resp.redirect;
       },
       error: function(error){
         console.log(error);

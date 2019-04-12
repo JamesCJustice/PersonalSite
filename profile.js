@@ -121,7 +121,22 @@ function createProfile(profile){
         }
     });
     return stmt.finalize();
-  });;
+  });
+}
+
+function updatePassword(prof, pass){
+  const hash = crypto.createHash('sha256');
+  hash.update(pass + prof.salt);
+  var hashedPassword = hash.digest('base64');
+  let sql = 'UPDATE profile SET password = ? WHERE id = ?;';
+  return new Promise(function(resolve, reject){
+    db.run(sql, hashedPassword, prof.id, function(err){
+      if(err){
+        reject(err);
+      }
+      resolve();
+    });
+  });
 }
 
 function updateProfileExtra(id, extra){
@@ -133,7 +148,7 @@ function updateProfileExtra(id, extra){
       $value: extra[key] 
     });
   });
-  console.log('rows: ' + JSON.stringify(rows));
+
   let sql = 'INSERT OR REPLACE INTO profile_extra (profile_id, name, value)';
   sql    += 'VALUES($profile_id, $name, $value);';
   return new Promise(function(resolve, reject){
@@ -207,5 +222,6 @@ module.exports = {
   updateProfileExtra: updateProfileExtra,
   getValidFieldNames: getValidFieldNames,
   filterExtra: filterExtra,
-  authenticateUser: authenticateUser
+  authenticateUser: authenticateUser,
+  updatePassword: updatePassword
 };
