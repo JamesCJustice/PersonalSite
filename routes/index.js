@@ -6,10 +6,7 @@ module.exports = function(app){
     ejs = require('ejs');
 
   app.get('/', userAuthenticated, function(req, res){
-    let data = {
-      loggedIn: req.session.loggedIn,
-      username: req.session.username
-    };
+    let data = req.headerData;
 
     res.render('index', data);
   });
