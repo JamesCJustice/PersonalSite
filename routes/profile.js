@@ -8,7 +8,8 @@ const sqlite3 = require('sqlite3').verbose(),
     db = new sqlite3.Database('profile.db'),
     profile = require('../profile'),
     ejs = require('ejs'),
-    getHeaderData = require('../middleware/getHeaderData');
+    getHeaderData = require('../middleware/getHeaderData'),
+    currency = require('../currency');
 
 module.exports = function(app){
     app.use(bodyParser.json());
@@ -156,7 +157,7 @@ module.exports = function(app){
                 success: 0,
                 msg: "Please fill out all fields."
             };
-            console.log(result["msg"]);
+            console.log("message " + JSON.stringify(result["msg"]));
             res.status(400).json(result);
             return;
         }
@@ -166,6 +167,15 @@ module.exports = function(app){
             password: password
         })
         .then(function(){
+            console.log("We got here.1");
+            return profile.getProfileByUsername(username);
+        })
+        .then(function(profile){
+            console.log("We got here.2");
+            return currency.createCurrency('cash', 50, profile['id']);
+        })
+        .then(function(){
+            console.log("We got here.3");
             return res.status(201).json({
                 success: 1,
                 msg: "User registered successfully.",

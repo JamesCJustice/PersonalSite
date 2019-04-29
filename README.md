@@ -3,8 +3,6 @@
 This is my personal site, a continuation of the node site I removed from the ManafestLore repo.
 A webserver was wasted on merely serving static files, but I'll find some nifty things to do with this one. This website exists for me to practice front-end skills, develop utilities, and try out weird ideas.
 
-
-
 # /ideaguy/
 Yup, this section is pretty much a pile of checks that I may or may not cash.
 Nice-to-haves and huge scope features as well as poorly-articulated ones go here.
