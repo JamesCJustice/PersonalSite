@@ -31,9 +31,6 @@ As the author of the Manafest Lore repo, I would like a way for my repo's
 markdown files to be translated to HTML and put on display on install so that I 
 could view the lore from my site.
 
-## digital currency
-As a game developer, I would like to create an on-site currency in order to gameify certain actions and discourage others.
-
 ## Character customization page
 As a game developer, I would like players to be able to customize a character 
 on-site that they can import into the games I make to establish continuity of 
