@@ -56,7 +56,7 @@ function createCurrency(currency, amount, to){
   return handleTransaction({
       from: 0,
       to: to,
-      amount: amount,
+      quantity: amount,
       currency: currency
   });
 }
@@ -65,7 +65,7 @@ function destroyCurrency(currency, amount, from){
   return handleTransaction({
       from: from,
       to: 0,
-      amount: amount,
+      quantity: amount,
       currency: currency
   });
 }
@@ -74,39 +74,64 @@ function transferCurrency(currency, amount, to, from){
   return handleTransaction({
     from: from,
     to: to,
-    amount: amount,
+    quantity: amount,
     currency: currency
   });
 }
 
 function handleTransaction(trans){
-  let result = validateTransaction(trans);
-  if (!result.success) {
-      throw new Error("Could not complete transaction: " + result.errors);
-  }
-  if (trans.from != 0) {
-    incrementBalance(trans.from, trans.currency, -trans.amount);
-  }
-  if (trans.to != 0) {
-    incrementBalance(trans.to, trans.curency, trans.amount);
-  }
-  logTransaction(trans);
+  return new Promise(function(resolve, reject){
+    let result = validateTransaction(trans);
+    if (!result.success) {
+      return reject(new Error("Could not complete transaction: " + result.errors));
+    }
+    if (trans.from != 0) {
+      return incrementBalance(trans.from, trans.currency, -trans.amount);
+    }
+    resolve();
+  })
+  .then(function(){
+    if (trans.to != 0) {
+      return incrementBalance(trans.to, trans.curency, trans.amount);
+    }
+    return;
+  })
+  .then(function(){
+    return logTransaction(trans);
+  });
 }
 
 function logTransaction(trans){
+  return new Promise(function(resolve, reject){
     let query = 'INSERT into currency_transactions ';
     query += '(from_profile, to_profile, amount, currency)';
     query += ' values(?,?,?,?)';
-    return db.run(query, trans.from, trans.to, trans.amount, trans.currency);
+    db.run(query, trans.from, trans.to, trans.quantity, trans.currency);
+    resolve();
+  });
 }
 
 // Use negative to subtract
 function incrementBalance(profile_id, currency, amount){
-  let query = 'UPDATE currency_balance'; 
-  query += ' SET balance = balance + ? ';
-  query += ' WHERE profile_id = ?';
-  query += ' AND currency = ?';
-  return db.run(query, amount, profile_id, currency);
+  return balanceExists(profile_id, currency)
+  .then(function(result){
+    let query = '';
+    if(result == true){
+      query = 'UPDATE currency_balance'; 
+      query += ' SET balance = balance + ? ';
+      query += ' WHERE profile_id = ?';
+      query += ' AND currency = ?';
+      return db.run(query, amount, profile_id, currency);
+    }
+    else{
+      query = 'INSERT INTO currency_balance(profile_id, currency, balance) ';
+      query += 'VALUES(?,?,?)';
+      return db.run(query, profile_id, currency, balance);
+    }
+  })
+  .catch(function(err){
+    console.log('err ' + err);
+  });
 }
 
 function validateTransaction(trans){
@@ -136,9 +161,36 @@ function validateTransaction(trans){
     };
 }
 
+function balanceExists(profile_id, currency){
+  return new Promise(function(resolve, reject){
+    db.get("SELECT * FROM currency_balance WHERE profile_id = ? AND currency = ?", profile_id, currency, function(err, row){
+      if(err){
+          reject(err);
+      }
+      if(row){
+        resolve(true);
+      }
+      else{
+        resolve(false);  
+      }
+    });
+  });
+}
+
 function getBalance(profile_id, currency){
     return new Promise(function(resolve, reject){
-        resolve(0);
+        db.get("SELECT * FROM currency_balance WHERE profile_id = ? AND currency = ?", profile_id, currency, function(err, row){
+            if(err){
+                reject(err);
+            }
+            if(row){
+              resolve(row['balance']);
+            }
+            else{
+              resolve(0);  
+            }
+            
+        });
     });
 }
 
