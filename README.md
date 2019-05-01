@@ -26,12 +26,9 @@ As a host of a multiplayer Manafest game that is using the auth service, I
 would like my server to show up in a list of other servers so that I can 
 attract new players.
 
-## Lore pages
-As the author of the Manafest Lore repo, I would like a way for my repo's 
-markdown files to be translated to HTML and put on display on install so that I 
-could view the lore from my site.
+## Characters
+As the developer of a meta-game site, I would like to be able to create and store both player and non-player characters so that a payer's character can persist between a given game's servers, multiple games, and on the website.
 
-## Character customization page
-As a game developer, I would like players to be able to customize a character 
-on-site that they can import into the games I make to establish continuity of 
-identity across multiple servers or even different games.
+- Character table in database
+- create/edit character page
+- view character page
