@@ -1,0 +1,23 @@
+{
+  "name":"Overworld",
+  "cells":
+  [
+    {
+      "name": "Tandris",
+      "x":0,
+      "y":0,
+      "Cities": [
+        {
+          "name":"Tandris Kingdom",
+          "x":50,
+          "y":50
+        },
+        {
+          "name":"Green Thumb",
+          "x":60,
+          "y":30
+        }
+      ]
+    }
+  ]
+}
