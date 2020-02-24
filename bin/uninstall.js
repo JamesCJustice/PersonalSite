@@ -1,14 +1,7 @@
 console.log('Uninstalling...');
-const profile = require('../profile'),
-  currency = require('../currency');
+const profile = require('../profile');
 
 profile.uninstall()
-.then(function(){
-  return currency.uninstall();
-})
-.then(function(){
-  console.log('Uninstall complete.');
-})
 .catch(function(err){
     console.log(err);
 });

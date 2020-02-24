@@ -12,13 +12,13 @@
   <div class="row">
     <div class="header_left">
       <a href="/">Home</a>
+      <a href="/map">Map</a>
     </div>
-    <div class="header_center"><img class="img" src="/img/banner.jpg" alt="Banner"></div>
+    <div class="header_center"><img class="img" src="/img/banner.png" alt="Banner"></div>
     <div class="header_right">
       <% if(typeof loggedIn != 'undefined' && loggedIn){ %>
         <a href="/profile/edit">Profile: <%= username %></a>
         <a href="/logout">Logout</a>
-        <div> <strong>Fake currency: <%= currency %></strong></div>
       <% } else{ %>
         <a href="/login">Login</a>
       <% } %>

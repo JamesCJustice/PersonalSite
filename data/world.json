@@ -1,0 +1,66 @@
+{
+  "name":"Overworld",
+  "cells":
+  [
+    {
+      "name": "Tandris",
+      "x":0,
+      "y":0,
+      "cities": [
+        {
+          "name":"Tandris Kingdom",
+          "x":50,
+          "y":50,
+          "description":"Surrounding Tandris's castle is a dense urban area brimming with government and business buildings.",
+          "population":4000,
+          "faction":"PEN"
+        },
+        {
+          "name":"Green Thumb",
+          "x":60,
+          "y":30
+        },
+        {
+          "name":"Port Issmus",
+          "x":70,
+          "y":40
+        },
+        {
+          "name":"Black Boot",
+          "x":30,
+          "y":70
+        },
+        {
+          "name":"New Blood",
+          "x":20,
+          "y":50
+        },
+        {
+          "name":"Old Blood",
+          "x":30,
+          "y":30
+        },
+        {
+          "name":"Sun Haven",
+          "x":50,
+          "y":10
+        },
+        {
+          "name":"Winterholm",
+          "x":50,
+          "y":90
+        },
+        {
+          "name":"Trader Town",
+          "x":10,
+          "y":50
+        },
+        {
+          "name":"Farpoint Prison",
+          "x":90,
+          "y":45
+        }
+      ]
+    }
+  ]
+}
