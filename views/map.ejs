@@ -8,12 +8,26 @@
 
 <% include header %>
 
-<h2>World Map</h2>
-<div id="map_div"></div>
-
-<script>
-    $(document).ready(function(){
-      map.render();
-    });
-
-</script>
+<h2 id="map_title" class="map_title">World Map</h2>
+  <div style="display: table-row;">
+    <div id="map_nav_div" class="map_nav_div"><div style="display: table;">
+      <div style="display: table-row;">
+        <button style="width: 33%;" id="map_nav_nw">NW</button>
+        <button style="width: 33%;" id="map_nav_n">N</button>
+        <button style="width: 33%;" id="map_nav_ne">NE</button>
+      </div>
+      <div style="display: table-row;">
+        <button style="width: 33%;" id="map_nav_w">W</button>
+        <button style="width: 33%;" id="map_nav_c">C</button>
+        <button style="width: 33%;" id="map_nav_e">E</button>
+      </div>
+      <div style="display: table-row; width: 100%;">
+        <button style="width: 33%;" id="map_nav_sw">SW</button>
+        <button style="width: 33%;" id="map_nav_s">S</button>
+        <button style="width: 33%;" id="map_nav_se">SE</button>
+      </div>
+    </div></div>
+    <div id="map_div" class="map_div"></div>
+    <div id="map_info_div" class="map_info_div"><div id="map_info_detail" class="map_info_detail"></div></div>
+  </div>
+</div>

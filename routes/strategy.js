@@ -13,7 +13,6 @@ module.exports = function(app){
   app.get('/map/cells/:x/:y', function(req, res){
     let x = req.params.x;
     let y = req.params.y;
-    console.log("Map cell [" + x + "," + y +"] requested");
     let mapCellData = strategy.getMapCell(x, y);
     return res.send(mapCellData);
   });

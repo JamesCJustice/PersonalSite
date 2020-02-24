@@ -10,9 +10,10 @@ function getMapData(){
 function getMapCell(x, y){
   let mapData = getMapData();
   let foundMapCell = {
-    name: "No map data",
+    name: "No data",
     x: x,
-    y: y
+    y: y,
+    cities: []
   };
   for(let i = 0; i < mapData.cells.length; i++){
     let cell = mapData.cells[i];
