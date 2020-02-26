@@ -123,6 +123,19 @@ function buildForcesWildernessData(foundForces, cell, forces){
   }
 }
 
+function getUserFaction(userName){
+  let factionsData = getFactionsData();
+  for(let i = 0; i < factionsData.factions.length; i++){
+    let faction = factionsData.factions[i];
+    for(let j = 0; j < faction.whitelist.length; i++){
+      if(userName === faction.whitelist[j]){
+        return faction.name;
+      }
+    }
+  }
+  return "";
+}
+
 function getAllForcesInFactions(factionsData){
   let ret = [];
 

@@ -1,6 +1,7 @@
 {
   "factions": [
     {
+      "whitelist": ["Hobgoblins"],
       "name": "Hobgoblins",
       "admins": ["h"],
       "finances": {
