@@ -37,12 +37,33 @@ map.renderMapData = function(mapData){
     let y = (100 - city.y - 15) * MapCoordsPixelScale;
     console.log("Placing " + city.name + " at [" + x + "," + y + "]" );
 
-    $('#map_div').append('<div id="' + id + '" class="map_city_icon"></div>');
-    $('#' + id)
-      .text("X " + city.name)
+    let cityText = city.name;
+      if(typeof city.forces !== 'undefined'){
+      cityText += "[" + city.forces.length + "]";
+    }
+
+    $('#map_div').append('<div id="city_' + id + '" class="map_city_icon"></div>');
+    $('#city_' + id)
+      .text("X " + cityText)
       .css("top", y + "px")
       .css("left", x + "px")
       .click( () => map.displayCityInformation(i));  
+  }
+
+  for(let i = 0; i < mapData.forces.length; i++){
+    let force = mapData.forces[i];
+    if(typeof force.x !== 'undefined' && typeof force.y !== 'undefined'){
+      let x = force.x * MapCoordsPixelScale;
+      let y = (100 - force.y - 15) * MapCoordsPixelScale;
+      console.log(x + "," + y + "], [" + force.x + "," + force.y);
+      $('#map_div').append('<div id="force_' + i + '" class="map_force_icon"></div>');
+      $('#force_' + i)
+        .text("[X]")
+        .css("top", y + "px")
+        .css("left", x + "px")
+        .click( () => map.displayForceInformation(i));  
+    }
+
   }
 }
 
@@ -53,12 +74,48 @@ map.recenter = function(xMovement, yMovement){
 }
 
 map.displayCityInformation = function(cityId){
-  console.log(map.data);
   let city = map.data.cities[cityId];
   $('#map_info_div')
     .css("visibility", "visible")
     .css("overflow-wrap", "break-word")
     .html(map.formatCityDetail(city));
+}
+
+map.displayForceInformation = function(forceId){
+  let force = map.data.forces[forceId];
+  $('#map_info_div')
+    .css("visibility", "visible")
+    .css("overflow-wrap", "break-word")
+    .html(map.formatForceDetail(force));
+}
+
+map.formatForceDetail = function(force){
+  let ret = "";
+  if(typeof force.name !== 'undefined'){
+    ret += "<b>" + force.name + "</b><br>";
+  }
+  if(typeof force.faction !== 'undefined'){
+    ret += "Faction: " + force.faction + "<br>";
+  }
+  if(typeof force.orders !== 'undefined'){
+    ret += "Orders: " + force.orders + "<br>";
+  }
+  if(typeof force.categories !== 'undefined'){
+    ret += "Categories: " + force.categories.join(",") + "<br>";
+  }
+  if(typeof force.personnel !== 'undefined'){
+    ret += "Personnel<br>";
+    for(let i = 0; i < force.personnel.length; i++){
+      let person = force.personnel[i];
+      if(typeof person.archetype !== 'undefined'){
+        ret += "&emsp;" + person.archetype + "<br>";
+      }
+      if(typeof person.extra !== 'undefined'){
+        ret += "&emsp;&emsp;[" + person.extra + "]<br>";
+      }
+    }
+  }
+  return ret;
 }
 
 map.formatCityDetail = function(city){
@@ -76,6 +133,13 @@ map.formatCityDetail = function(city){
   if(typeof city.faction !== 'undefined'){
     ret += "<br>Faction: " + city.faction; 
   }
+  if(typeof city.forces !== 'undefined'){
+    ret += "<br>Forces in city:"
+    for(let i = 0; i < city.forces.length; i++){
+      ret += "<br>" + city.forces[i];
+    }
+  }
+
   return ret;
 }
 

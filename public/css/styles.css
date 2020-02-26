@@ -23,8 +23,7 @@ label {
 }
 
 .map_nav_div {
-  display: table-cell;
-  
+  display: table-cell; 
 }
 
 .map_div {
@@ -49,6 +48,14 @@ label {
 .map_city_icon {
   color: black;
   background-color: grey;
+  width: 10px;
+  height: 10px;
+  position: relative;
+}
+
+.map_force_icon {
+  color: red;
+  background-color: red;
   width: 10px;
   height: 10px;
   position: relative;
