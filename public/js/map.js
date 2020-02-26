@@ -37,7 +37,7 @@ map.renderMapData = function(mapData){
     let y = (100 - city.y - 15) * MapCoordsPixelScale;
 
     let cityText = city.name;
-      if(typeof city.forces !== 'undefined'){
+      if(typeof city.forces !== 'undefined' && city.forces.length > 0){
       cityText += "[" + city.forces.length + "]";
     }
 
@@ -139,7 +139,7 @@ map.formatCityDetail = function(city){
   if(typeof city.faction !== 'undefined'){
     ret += "<br>Faction: " + city.faction; 
   }
-  if(typeof city.forces !== 'undefined'){
+  if(typeof city.forces !== 'undefined' && city.forces.length > 0){
     ret += "<br>Forces in city:"
     for(let i = 0; i < city.forces.length; i++){
       let force = city.forces[i];
