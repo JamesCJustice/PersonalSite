@@ -35,7 +35,6 @@ map.renderMapData = function(mapData){
     let id = "city_" + i + "_div";
     let x = city.x * MapCoordsPixelScale;
     let y = (100 - city.y - 15) * MapCoordsPixelScale;
-    console.log("Placing " + city.name + " at [" + x + "," + y + "]" );
 
     let cityText = city.name;
       if(typeof city.forces !== 'undefined'){
@@ -55,13 +54,13 @@ map.renderMapData = function(mapData){
     if(typeof force.x !== 'undefined' && typeof force.y !== 'undefined'){
       let x = force.x * MapCoordsPixelScale;
       let y = (100 - force.y - 15) * MapCoordsPixelScale;
-      console.log(x + "," + y + "], [" + force.x + "," + force.y);
-      $('#map_div').append('<div id="force_' + i + '" class="map_force_icon"></div>');
-      $('#force_' + i)
+
+      $('#map_div').append('<div id="force_' + force.id + '" class="map_force_icon"></div>');
+      $('#force_' + force.id)
         .text("[X]")
         .css("top", y + "px")
         .css("left", x + "px")
-        .click( () => map.displayForceInformation(i));  
+        .click( () => map.displayForceInformation(force.id));  
     }
 
   }
@@ -75,6 +74,7 @@ map.recenter = function(xMovement, yMovement){
 
 map.displayCityInformation = function(cityId){
   let city = map.data.cities[cityId];
+  city.id = cityId;
   $('#map_info_div')
     .css("visibility", "visible")
     .css("overflow-wrap", "break-word")
@@ -82,7 +82,13 @@ map.displayCityInformation = function(cityId){
 }
 
 map.displayForceInformation = function(forceId){
-  let force = map.data.forces[forceId];
+  let force = -1;
+  for(let i = 0; i < map.data.forces.length; i++){
+   if(map.data.forces[i].id == forceId){
+    force = map.data.forces[i];
+   }
+  }
+
   $('#map_info_div')
     .css("visibility", "visible")
     .css("overflow-wrap", "break-word")
@@ -136,7 +142,9 @@ map.formatCityDetail = function(city){
   if(typeof city.forces !== 'undefined'){
     ret += "<br>Forces in city:"
     for(let i = 0; i < city.forces.length; i++){
-      ret += "<br>" + city.forces[i];
+      let force = city.forces[i];
+      let forceName = force.faction + ": " + force.name;
+      ret += '<br><a id="city_' + city.id + "_force_" + force.id  + '" onclick="map.displayForceInformation(' + force.id + ');">' + forceName + "</a>"
     }
   }
 

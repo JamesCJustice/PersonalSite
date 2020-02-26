@@ -51,7 +51,7 @@ function buildForcesCityData(foundForces, forces, cities){
       let force = forces[j];
       if(force.location.toLowerCase() === city.name.toLowerCase()){
         foundForces.push(force);
-        city.forces.push(force.faction + ": " + force.name);
+        city.forces.push(force);
       }
     }
   }
@@ -79,6 +79,7 @@ function getAllForcesInFactions(factionsData){
 
     for(let j = 0; j < faction.forces.length; j++){
       let force = faction.forces[j];
+      force.id = ret.length;
       force.faction = faction.name;
       ret.push(force);
     }
