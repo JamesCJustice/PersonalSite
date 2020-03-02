@@ -62,6 +62,7 @@ function filterPrivilegedData(data, faction){
         }
       }
     }
+    city.id = i + 1;
   }
 
   return data;

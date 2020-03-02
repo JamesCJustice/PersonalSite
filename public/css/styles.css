@@ -34,6 +34,12 @@ label {
   display: table-cell;
 }
 
+.map_canvas {
+  margin: auto;
+  background-color: #ffffcc;
+  display: table-cell;
+}
+
 .map_info_div {
   display: table-cell;
   background-color: #666699;
