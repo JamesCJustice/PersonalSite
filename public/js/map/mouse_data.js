@@ -38,10 +38,10 @@ class MouseData{
 
   updateMouseData(){
   this.clicked = this.down && !this.downPrev;
+  this.released = !this.down && this.downPrev;
   if(this.clicked){
     this.downX = this.x;
     this.downY = this.y;
-    console.log(`Clicked [${Math.floor(this.downX)}, ${Math.floor(this.downY)}]`);
   }
   this.downPrev = this.down;
 }
