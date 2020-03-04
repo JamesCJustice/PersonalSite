@@ -1,4 +1,39 @@
-const fs = require('fs');
+const fs = require('fs'),
+  Db = require('./db').Db,
+  db = new Db('strategy.db');
+
+function install(){
+  console.log('Creating city');
+  let query = "";
+  query += 'CREATE TABLE IF NOT EXISTS city (';
+  query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+  query += 'name VARCHAR(255),';
+  query += 'description TEXT,';
+  query += 'population INTEGER,';
+  query += 'x INTEGER,';
+  query += 'y INTEGER,';
+  query += 'region_id INTEGER';
+  query += ')';
+  return db.run(query)
+  .then(function(){
+    console.log('Creating region');
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS region (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'name VARCHAR(255) NOT NULL,';
+    query += 'x INTEGER NOT NULL,';
+    query += 'y INTEGER NOT NULL';
+    query += ');';
+    return db.run(query); 
+  });
+}
+
+function uninstall(){
+  return db.run("DROP TABLE IF EXISTS city")
+  .then(function(){
+    return db.run("DROP TABLE IF EXISTS region");
+  });
+}
 
 function getMapData(){
   let rawData = fs.readFileSync('./data/world.json');
@@ -154,6 +189,31 @@ function getAllForcesInFactions(factionsData){
   return ret;
 }
 
+function isAdmin(username){
+  return true;
+}
+
+function createOrUpdateCity(city){
+  validateCity(city);
+  let row = [ city.name, city.description, city.population, city.x, city.y, city.region_id ];
+  if(city.id == -1){
+    console.log("Insert city");
+    return db.insert("INTO city (name, description, population, x, y, region_id) VALUES(?, ?, ?, ?, ?, ?)", row);
+  }
+  console.log("Update city");
+  row.push(city.id);
+  return db.update(` city SET name = ?, description = ?, population = ?, x = ?, y = ?, region_id = ? WHERE id = ?`, row);
+}
+
+
+function validateCity(city){
+  return true;
+}
+
+function deleteCity(id){
+  return db.delete(`FROM city WHERE id = ${id}`);
+}
+
 let factionsDataCache;
 function getFactionsData(){
   if(factionsDataCache){
@@ -164,7 +224,20 @@ function getFactionsData(){
   return factionsData;
 }
 
+async function getCities(){
+  let mapData = getMapData();
+  let cities = await db.select("* FROM city");
+  
+  return cities;
+}
+
 module.exports = {
   getMapData: getMapData,
-  getMapCell: getMapCell
+  getMapCell: getMapCell,
+  isAdmin: isAdmin,
+  getCities: getCities,
+  install: install,
+  uninstall: uninstall,
+  deleteCity: deleteCity,
+  createOrUpdateCity: createOrUpdateCity
 };

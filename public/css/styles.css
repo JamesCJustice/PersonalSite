@@ -13,6 +13,15 @@ label {
   background-color: black;
 }
 
+.city_row {
+  background-color: #ffffcc;
+}
+
+.city_label {
+ background-color: #ffffcc;
+ color: black;
+}
+
 .map_title {
   text-align: left;
 }
