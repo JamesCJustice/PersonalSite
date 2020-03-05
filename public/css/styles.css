@@ -13,14 +13,34 @@ label {
   background-color: black;
 }
 
+.cities_ul {
+  overflow: scroll;
+  max-height: 300px;
+}
+
 .city_row {
   background-color: #ffffcc;
+}
+
+.region_label {
+ background-color: #ffffcc;
+ color: black;
+}
+
+.region_row {
+  background-color: #ffffcc;
+}
+
+.regions_ul {
+  overflow: scroll;
+  max-height: 300px;
 }
 
 .city_label {
  background-color: #ffffcc;
  color: black;
 }
+
 
 .map_title {
   text-align: left;

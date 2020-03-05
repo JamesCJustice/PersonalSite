@@ -70,4 +70,47 @@ module.exports = function(app){
     }
   });
 
+  app.get('/regions/data', getHeaderData, async function(req, res){
+    if(!strategy.isAdmin(getHeaderData['username'])){
+      return res.send({});
+    }
+    try{
+      let regions = await strategy.getRegions();
+      return res.send(regions);
+    } catch(e) {
+      console.log(e);
+      return res.send({});
+    }
+    
+  });
+
+  app.post('/regions/:id/delete', getHeaderData, async function(req, res){
+    if(!strategy.isAdmin(getHeaderData['username'])){
+      return res.send({status: 403});
+    }
+    let success = 0;
+    try {
+      await strategy.deleteRegion(req.params.id);
+      success = 1;
+    } catch(e) {
+      console.error(e);
+      success = 0;
+    }
+    return res.send({success: success});
+  });
+
+  app.post('/regions/:id/update', getHeaderData, async function(req, res){
+    if(!strategy.isAdmin(getHeaderData['username'])){
+      return res.send({status: 403});
+    }
+    let region = req.body;
+    try {
+      await strategy.createOrUpdateRegion(region);
+      res.send({success: 1}); 
+    } catch(e) {
+      console.error(e);
+      res.send({success: 0});
+    }
+  });
+
 }

@@ -1,3 +1,114 @@
+/*
+
+  Regions Code
+*/
+var globalRegionsList = [];
+
+function getRegionsData(){
+  $.ajax({
+      type: 'GET',
+      url: "/regions/data",
+      contentType: "application/json; charset=utf-8",
+      success: buildRegions,
+      error: function(error){
+          console.log(error);
+      }
+  });
+}
+
+function buildRegions(regions){
+  globalRegionsList = Array.from(regions); 
+
+  let newRegion = {
+    id: -1,
+    name: "New Region"
+  };
+  regions.unshift(newRegion);
+  for(let i in regions){
+    buildRegionRow(regions[i]);
+  }
+  refreshCities();
+}
+
+function getRegionFields(){
+  return ["name", "x", "y"];
+}
+
+function buildRegionRow(region){  
+  let fields = getRegionFields();
+
+  let row = `<div id="region_${region.id}_div" class="region_row"><button id="delete_region_${region.id}">x</button>`;
+
+  for(let i in fields){
+    let field = fields[i];
+    let fieldValue = region[field] == 0 ? 0 : region[field] || "";
+    row += `<label class="region_label">${field}</label><input type="text" name="${field}" value="${fieldValue}"></input>`;
+    if((i+1) % 3 == 0){
+      row +="<br>";
+    }
+  }
+  row += `<button id="update_region_${region.id}">Update</button>`;
+  row += "</div>";
+
+  $("#regions_ul")
+    .append(row);
+
+  $("#delete_region_" + region.id)
+    .click(function(){
+      deleteRegion(region.id);
+    });
+  $("#update_region_" + region.id)
+    .click(function(){
+      updateRegion(region.id);
+    });
+}
+
+function deleteRegion(id){
+  $.ajax({
+      type: 'POST',
+      url: `/regions/${id}/delete`,
+      contentType: "application/json; charset=utf-8",
+      success: refreshRegions,
+      error: function(error){
+          console.log(error);
+      }
+  });
+}
+
+function updateRegion(id){
+  let data = {
+    id: id
+  };
+
+  let fields = getRegionFields();
+  for(let i in fields){
+    let field = fields[i];
+    data[field] = $(`#region_${id}_div`)
+      .children(`input[name="${field}"]`).val();
+  }
+
+  $.ajax({
+      type: 'POSt',
+      url: `/regions/${id}/update`,
+      data: JSON.stringify(data),
+      contentType: "application/json; charset=utf-8",
+      success: refreshRegions,
+      error: function(error){
+          console.log(error);
+      }
+  });
+}
+
+function refreshRegions(){
+  $("#regions_ul").empty();
+  getRegionsData();
+}
+
+/*
+
+  Cities Code
+*/
+
 function getCitiesData(){
   $.ajax({
       type: 'GET',
@@ -11,23 +122,21 @@ function getCitiesData(){
 }
 
 function buildCities(cities){
-  console.log(JSON.stringify(cities));
   let newCity = {
     id: -1,
     name: "New city"
   };
-  cities.push(newCity);
+  cities.unshift(newCity);
   for(let i in cities){
     buildCityRow(cities[i]);
   }
 }
 
 function getCityFields(){
-  return ["name", "description", "population", "region", "x", "y"];
+  return ["name", "description", "population", "x", "y"];
 }
 
 function buildCityRow(city){
-  console.log("City " + JSON.stringify(city));
   
   let fields = getCityFields();
 
@@ -41,6 +150,7 @@ function buildCityRow(city){
       row +="<br>";
     }
   }
+  row += `<select id="city_${city.id}_region"></select>`;
   row += `<button id="update_city_${city.id}">Update</button>`;
   row += "</div>";
 
@@ -55,6 +165,13 @@ function buildCityRow(city){
     .click(function(){
       updateCity(city.id);
     });
+
+  let regionSelect = $(`#city_${city.id}_region`);
+  for(let i in globalRegionsList){
+    let region = globalRegionsList[i];
+    regionSelect.append(`<option value="${region.id}">${region.name}</option>`);
+  }
+  regionSelect.val(city.region_id);
 
 }
 
@@ -81,7 +198,7 @@ function updateCity(id){
     data[field] = $(`#city_${id}_div`)
       .children(`input[name="${field}"]`).val();
   }
-  console.log("Updating " + JSON.stringify(data));
+  data.region_id = $(`#city_${id}_region`).val();
   $.ajax({
       type: 'POSt',
       url: `/cities/${id}/update`,
@@ -100,5 +217,5 @@ function refreshCities(){
 }
 
 $(document).ready(function(){
-  getCitiesData();
+  getRegionsData();
 });

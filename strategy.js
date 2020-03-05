@@ -3,7 +3,6 @@ const fs = require('fs'),
   db = new Db('strategy.db');
 
 function install(){
-  console.log('Creating city');
   let query = "";
   query += 'CREATE TABLE IF NOT EXISTS city (';
   query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
@@ -16,7 +15,6 @@ function install(){
   query += ')';
   return db.run(query)
   .then(function(){
-    console.log('Creating region');
     let query = "";
     query += 'CREATE TABLE IF NOT EXISTS region (';
     query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
@@ -197,10 +195,8 @@ function createOrUpdateCity(city){
   validateCity(city);
   let row = [ city.name, city.description, city.population, city.x, city.y, city.region_id ];
   if(city.id == -1){
-    console.log("Insert city");
     return db.insert("INTO city (name, description, population, x, y, region_id) VALUES(?, ?, ?, ?, ?, ?)", row);
   }
-  console.log("Update city");
   row.push(city.id);
   return db.update(` city SET name = ?, description = ?, population = ?, x = ?, y = ?, region_id = ? WHERE id = ?`, row);
 }
@@ -231,6 +227,31 @@ async function getCities(){
   return cities;
 }
 
+async function getRegions(){
+  let mapData = getMapData();
+  let regions = await db.select("* FROM region");
+  
+  return regions;
+}
+
+function deleteRegion(id){
+  return db.delete(`FROM region WHERE id = ${id}`);
+}
+
+function validateRegion(region){
+  return true;
+}
+
+function createOrUpdateRegion(region){
+  validateRegion(region);
+  let row = [ region.name, region.x, region.y];
+  if(region.id == -1){
+    return db.insert("INTO region (name, x, y) VALUES(?, ?, ?)", row);
+  }
+  row.push(region.id);
+  return db.update(` region SET name = ?, x = ?, y = ? WHERE id = ?`, row);
+}
+
 module.exports = {
   getMapData: getMapData,
   getMapCell: getMapCell,
@@ -239,5 +260,8 @@ module.exports = {
   install: install,
   uninstall: uninstall,
   deleteCity: deleteCity,
-  createOrUpdateCity: createOrUpdateCity
+  createOrUpdateCity: createOrUpdateCity,
+  getRegions: getRegions,
+  deleteRegion: deleteRegion,
+  createOrUpdateRegion: createOrUpdateRegion
 };
