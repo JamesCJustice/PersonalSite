@@ -39,32 +39,35 @@ function getMapData(){
   return mapData;
 }
 
-function getMapCell(x, y, faction){
-  let mapData = getMapData();
-  const NoData = "No data";
-  let foundMapCell = {
-    name: NoData,
-    x: x,
-    y: y,
-    cities: []
-  };
-  for(let i = 0; i < mapData.cells.length; i++){
-    let cell = mapData.cells[i];
-    if(cell.x == x && cell.y == y){
-      foundMapCell = cell;
-    }
+async function getMapRegion(x, y, faction){
+  let region = await getRegionByCoords(x, y);
+  region.cities = [];
+  let cities = region.id > -1 ? await getCitiesByRegion(region.id) : [];
+  for(let i in cities){
+    let city = cities[i];
+    region.cities.push(city);
   }
-  if(foundMapCell.name === NoData){
-    return foundMapCell;
+  return region;
+}
+
+async function getRegionByCoords(x, y){
+  let rows = await db.select(`* FROM region WHERE x = ${x} AND y = ${y}`);
+  
+  if(rows.length < 1){
+    return {
+      id: -1,
+      name: "No Data",
+      x: x,
+      y: y,
+      cities: []
+    };
   }
+  let region = rows[0];
+  return region;
+}
 
-  let factionsData = getFactionsData();
-  let forces = buildForcesData(factionsData, foundMapCell);
-  foundMapCell.forces = forces;
-
-  foundMapCell = filterPrivilegedData(foundMapCell, faction);
-
-  return foundMapCell;
+async function getCitiesByRegion(regionId){
+  return db.select(`* FROM city WHERE region_id = ${regionId}`);
 }
 
 function filterPrivilegedData(data, faction){
@@ -254,7 +257,7 @@ function createOrUpdateRegion(region){
 
 module.exports = {
   getMapData: getMapData,
-  getMapCell: getMapCell,
+  getMapRegion: getMapRegion,
   isAdmin: isAdmin,
   getCities: getCities,
   install: install,

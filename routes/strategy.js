@@ -13,11 +13,16 @@ module.exports = function(app){
     return res.render('map');
   });
 
-  app.get('/map/cells/:x/:y', getHeaderData, function(req, res){
+  app.get('/map/regions/:x/:y', getHeaderData, async function(req, res){
     let x = req.params.x;
     let y = req.params.y;
-    let mapCellData = strategy.getMapCell(x, y, req.headerData['username']);
-    return res.send(mapCellData);
+    try{
+      let mapRegionData = await strategy.getMapRegion(x, y, req.headerData['username']);
+      return res.send(mapRegionData);
+    }catch(e){
+      console.log(e);
+      return res.send({name: "Error"});
+    }
   });
 
   app.get('/cities', getHeaderData, function(req, res){

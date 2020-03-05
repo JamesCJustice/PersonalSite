@@ -29,7 +29,7 @@ class MapCanvas{
     }
     $.ajax({
         type: 'GET',
-        url: "/map/cells/" + this.x + "/" + this.y + "/",
+        url: "/map/regions/" + this.x + "/" + this.y + "/",
         contentType: "application/json; charset=utf-8",
         success: this.renderMapData.bind(this),
         error: function(error){
