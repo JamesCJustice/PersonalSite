@@ -3,6 +3,7 @@ const fs = require('fs'),
   db = new Db('strategy.db');
 
 function install(){
+  console.log("Installing city");
   let query = "";
   query += 'CREATE TABLE IF NOT EXISTS city (';
   query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
@@ -15,6 +16,7 @@ function install(){
   query += ')';
   return db.run(query)
   .then(function(){
+    console.log("Installing region");
     let query = "";
     query += 'CREATE TABLE IF NOT EXISTS region (';
     query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
@@ -23,14 +25,103 @@ function install(){
     query += 'y INTEGER NOT NULL';
     query += ');';
     return db.run(query); 
+  })
+  .then(function(){
+    console.log("Installing faction");
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS faction (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'name VARCHAR(255) NOT NULL,';
+    query += 'x INTEGER NOT NULL,';
+    query += 'y INTEGER NOT NULL';
+    query += ');';
+    return db.run(query); 
+  })
+  .then(function(){
+    console.log("Installing force");
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS force (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'name VARCHAR(255) NOT NULL,';
+    query += 'force_types VARCHAR(255) NOT NULL,';
+    query += 'x INTEGER,';
+    query += 'y INTEGER,';
+    query += 'city_id INTEGER';
+    query += ');';
+    return db.run(query); 
+  })
+  .then(function(){
+    console.log("Installing unit");
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS unit (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'level INTEGER NOT NULL,';
+    query += 'archetype_id INTEGER NOT NULL,';
+    query += 'force_id INTEGER NOT NULL,';
+    query += 'name VARCHAR(255) NOT NULL';
+    query += ');';
+    return db.run(query); 
+  })
+  .then(function(){
+    console.log("Installing unit_archetype");
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS unit_archetype (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'data TEXT NOT NULL,';
+    query += 'issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,';
+    query += 'execution_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP';
+    query += ');';
+    return db.run(query)
+  })
+  .then(function(){
+    console.log("Installing unit_inventory_item");
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS unit_inventory_item (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'quantity INTEGER NOT NULL,';
+    query += 'faction_id INTEGER NOT NULL,';
+    query += 'unit_id INTEGER NOT NULL';
+    query += ');';
+    return db.run(query); 
+  })
+  .then(function(){
+    console.log("Installing order");
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS faction_order (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'faction_id INTEGER NOT NULL,';
+    query += 'text TEXT NOT NULL,';
+    query += 'issue_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP,';
+    query += 'execution_date TIMESTAMP DEFAULT CURRENT_TIMESTAMP';
+    query += ');';
+    return db.run(query); 
+  })
+  .then(function(){
+    console.log("Installing item_archetype");
+    let query = "";
+    query += 'CREATE TABLE IF NOT EXISTS item_archetype (';
+    query += 'id INTEGER PRIMARY KEY AUTOINCREMENT,';
+    query += 'name VARCHAR(255) NOT NULL,';
+    query += 'damage VARCHAR(255) NOT NULL,';
+    query += 'copper_cost INTEGER NOT NULL,';
+    query += 'weight INTEGER NOT NULL,';
+    query += 'description TEXT NOT NULL,';
+    query += 'properties TEXT NOT NULL';
+    query += ');';
+    return db.run(query); 
   });
 }
 
-function uninstall(){
-  return db.run("DROP TABLE IF EXISTS city")
-  .then(function(){
-    return db.run("DROP TABLE IF EXISTS region");
-  });
+async function uninstall(){
+  let tables = ["city", "region", "faction", "force", "unit", "unit_archetype", "unit_inventory_item", "faction_order", "item_archetype"];
+  for(let i in tables){
+    let table = tables[i];
+    await db.run("DROP TABLE IF EXISTS " + table);
+  }
+}
+
+function getForceTypes(){
+  return ["spy", "scout", "army"];
 }
 
 function getMapData(){
@@ -254,6 +345,8 @@ function createOrUpdateRegion(region){
   row.push(region.id);
   return db.update(` region SET name = ?, x = ?, y = ? WHERE id = ?`, row);
 }
+
+
 
 module.exports = {
   getMapData: getMapData,
