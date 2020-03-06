@@ -1,14 +1,10 @@
 // Handles updating and saving factions in a list.
-class FactionModel{
-  constructor(){
-    this.entity = "factions";
-    this.parent_id = "factions_ul";
+class DataModel{
+  constructor(settings){
+    this.entity = settings.entity
+    this.parentId = settings.parentId;
     this.rows = [];
-    this.columns = [
-      { type: "text", name: "name", example: "New faction", default: "" },
-      { type: "text", name: "x", example: "0", default: "" },
-      { type: "text", name: "y", example: "0", default: "" },
-    ];
+    this.columns = settings.columns;
   }
 
   update(){
@@ -32,7 +28,7 @@ class FactionModel{
 
   _renderRows(){
     let obj = this;
-    $("#" + obj.parent_id).empty();
+    $("#" + obj.parentId).empty();
     
     let emptyRow = { id: -1};
     for(let i in obj.columns){
@@ -45,7 +41,7 @@ class FactionModel{
       let row = obj.rows[i];
       
       let html = obj._buildRowHtml(row);
-      $("#" + obj.parent_id).append(html);
+      $("#" + obj.parentId).append(html);
       $(`#${obj.entity}_${row.id}_delete`).click(function(){
         let deleteRow = obj._deleteRow.bind(obj);
         deleteRow(row.id);
@@ -117,6 +113,14 @@ class FactionModel{
 let factionModel;
 
 $(document).ready(function(){
-  factionModel = new FactionModel();
+  factionModel = new FactionModel({
+    entity: "factions",
+    parent_id: "factions_ul",
+    columns: [
+      { type: "text", name: "name", example: "New faction", default: "" },
+      { type: "text", name: "x", example: "0", default: "" },
+      { type: "text", name: "y", example: "0", default: "" },
+    ],
+  });
   factionModel.update();
 });
