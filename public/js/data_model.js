@@ -1,10 +1,11 @@
-// Handles updating and saving factions in a list.
+// Handles updating and saving a list of data rows.
 class DataModel{
   constructor(settings){
-    this.entity = settings.entity
+    this.entity = settings.entity;
     this.parentId = settings.parentId;
     this.rows = [];
     this.columns = settings.columns;
+    console.log("DataModel" + JSON.stringify(this));
   }
 
   update(){
@@ -109,18 +110,3 @@ class DataModel{
     }); 
   }
 }
-
-let factionModel;
-
-$(document).ready(function(){
-  factionModel = new FactionModel({
-    entity: "factions",
-    parent_id: "factions_ul",
-    columns: [
-      { type: "text", name: "name", example: "New faction", default: "" },
-      { type: "text", name: "x", example: "0", default: "" },
-      { type: "text", name: "y", example: "0", default: "" },
-    ],
-  });
-  factionModel.update();
-});
