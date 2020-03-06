@@ -13,6 +13,11 @@ label {
   background-color: black;
 }
 
+.factions_ul {
+  overflow: scroll;
+  max-height: 200px;
+}
+
 .cities_ul {
   overflow: scroll;
   max-height: 300px;

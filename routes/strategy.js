@@ -32,6 +32,13 @@ module.exports = function(app){
     return res.render('cities');
   });
 
+  app.get('/factions', getHeaderData, function(req, res){
+    if(!strategy.isAdmin(getHeaderData['username'])){
+      return res.redirect('/map');
+    }
+    return res.render('factions');
+  });
+
   app.get('/cities/data', getHeaderData, async function(req, res){
     if(!strategy.isAdmin(getHeaderData['username'])){
       return res.send({});
@@ -111,6 +118,50 @@ module.exports = function(app){
     let region = req.body;
     try {
       await strategy.createOrUpdateRegion(region);
+      res.send({success: 1}); 
+    } catch(e) {
+      console.error(e);
+      res.send({success: 0});
+    }
+  });
+
+
+  app.get('/factions/data', getHeaderData, async function(req, res){
+    if(!strategy.isAdmin(getHeaderData['username'])){
+      return res.send({});
+    }
+    try{
+      let factions = await strategy.getFactions();
+      return res.send(factions);
+    } catch(e) {
+      console.log(e);
+      return res.send({});
+    }
+    
+  });
+
+  app.post('/factions/:id/delete', getHeaderData, async function(req, res){
+    if(!strategy.isAdmin(getHeaderData['username'])){
+      return res.send({status: 403});
+    }
+    let success = 0;
+    try {
+      await strategy.deleteFaction(req.params.id);
+      success = 1;
+    } catch(e) {
+      console.error(e);
+      success = 0;
+    }
+    return res.send({success: success});
+  });
+
+  app.post('/factions/:id/update', getHeaderData, async function(req, res){
+    if(!strategy.isAdmin(getHeaderData['username'])){
+      return res.send({status: 403});
+    }
+    let faction = req.body;
+    try {
+      await strategy.createOrUpdateFaction(faction);
       res.send({success: 1}); 
     } catch(e) {
       console.error(e);

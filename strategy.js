@@ -346,7 +346,30 @@ function createOrUpdateRegion(region){
   return db.update(` region SET name = ?, x = ?, y = ? WHERE id = ?`, row);
 }
 
+async function getFactions(){
+  let mapData = getMapData();
+  let factions = await db.select("* FROM faction");
+  
+  return factions;
+}
 
+function deleteFaction(id){
+  return db.delete(`FROM faction WHERE id = ${id}`);
+}
+
+function validateFaction(faction){
+  return true;
+}
+
+function createOrUpdateFaction(faction){
+  validateFaction(faction);
+  let row = [ faction.name, faction.x, faction.y];
+  if(faction.id == -1){
+    return db.insert("INTO faction (name, x, y) VALUES(?, ?, ?)", row);
+  }
+  row.push(faction.id);
+  return db.update(` faction SET name = ?, x = ?, y = ? WHERE id = ?`, row);
+}
 
 module.exports = {
   getMapData: getMapData,
@@ -359,5 +382,8 @@ module.exports = {
   createOrUpdateCity: createOrUpdateCity,
   getRegions: getRegions,
   deleteRegion: deleteRegion,
-  createOrUpdateRegion: createOrUpdateRegion
+  createOrUpdateRegion: createOrUpdateRegion,
+  deleteFaction: deleteFaction,
+  getFactions, getFactions,
+  createOrUpdateFaction, createOrUpdateFaction
 };
