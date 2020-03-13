@@ -13,6 +13,40 @@ label {
   background-color: black;
 }
 
+.factions_ul {
+  overflow: scroll;
+  max-height: 200px;
+}
+
+.cities_ul {
+  overflow: scroll;
+  max-height: 300px;
+}
+
+.city_row {
+  background-color: #ffffcc;
+}
+
+.region_label {
+ background-color: #ffffcc;
+ color: black;
+}
+
+.region_row {
+  background-color: #ffffcc;
+}
+
+.regions_ul {
+  overflow: scroll;
+  max-height: 300px;
+}
+
+.city_label {
+ background-color: #ffffcc;
+ color: black;
+}
+
+
 .map_title {
   text-align: left;
 }
@@ -23,14 +57,19 @@ label {
 }
 
 .map_nav_div {
-  display: table-cell;
-  
+  display: table-cell; 
 }
 
 .map_div {
   margin: auto;
   width: 600px;
   height: 600px;
+  background-color: #ffffcc;
+  display: table-cell;
+}
+
+.map_canvas {
+  margin: auto;
   background-color: #ffffcc;
   display: table-cell;
 }
@@ -49,6 +88,14 @@ label {
 .map_city_icon {
   color: black;
   background-color: grey;
+  width: 10px;
+  height: 10px;
+  position: relative;
+}
+
+.map_force_icon {
+  color: red;
+  background-color: red;
   width: 10px;
   height: 10px;
   position: relative;
