@@ -23,17 +23,21 @@ label {
   max-height: 300px;
 }
 
-.city_row {
+.cities_row {
   background-color: #ffffcc;
+  border-style: solid;
+  border-color: red;
+}
+
+.regions_row {
+  background-color: #ffffcc;
+  border-style: solid;
+  border-color: red;
 }
 
 .region_label {
  background-color: #ffffcc;
  color: black;
-}
-
-.region_row {
-  background-color: #ffffcc;
 }
 
 .regions_ul {

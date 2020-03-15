@@ -1,11 +1,22 @@
-console.log('Uninstalling...');
-const profile = require('../profile');
-const strategy = require('../strategy');
+const modules = [
+  '../profile',
+  '../strategy/map',
+  '../strategy/force',
+  '../strategy/faction'
+];
 
-profile.uninstall()
-.then(function(){
-  return strategy.uninstall();
-})
-.catch(function(err){
-    console.log(err);
-});
+async function run(){
+  console.log("Uninstall started");
+  for(let i in modules){
+    let mod = require(modules[i]);
+    try{
+      await mod.uninstall();
+    } catch(e){
+      console.log(e);
+    }
+
+  }
+  console.log("Uninstall complete");
+}
+
+run();
