@@ -56,7 +56,7 @@ class DataModel{
 
   _buildRowHtml(row){
     let obj = this;
-    let html = `<div id="${obj.entity}_${row.id}_div">`;
+    let html = `<div id="${obj.entity}_${row.id}_div" class="${obj.entity}_row">`;
     html += `<button id="${obj.entity}_${row.id}_delete">X</button>`
     for(let i in obj.columns){
       let col = obj.columns[i];
@@ -71,6 +71,9 @@ class DataModel{
   _buildColHtml(col){
     if(col.type === "text"){
       return `<label>${col.name}</label><input type="text" name="${col.name}" value="${col.val}"></input>`;
+    }
+    if(col.type === "readonly"){
+      return `<label>${col.name}</label><input type="text" name="${col.name}" value="${col.val}" readonly></input>`;
     }
   }
 

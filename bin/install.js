@@ -1,14 +1,22 @@
-console.log('Installing...');
-const profile = require('../profile');
-const strategy = require('../strategy');
+const modules = [
+  '../profile',
+  '../strategy/map',
+  '../strategy/force',
+  '../strategy/faction'
+];
 
-return profile.install()
-.then(function(){
-  return strategy.install();
-})
-.then(function(){
-  console.log('Install complete.');
-})
-.catch(function(err){
-    console.log(err);
-});
+async function run(){
+  console.log("Install started");
+  for(let i in modules){
+    let mod = require(modules[i]);
+    try{
+      await mod.install();
+    } catch(e){
+      console.log(e);
+    }
+
+  }
+  console.log("Install complete");
+}
+
+run();

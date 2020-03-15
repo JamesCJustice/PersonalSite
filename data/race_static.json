@@ -1,0 +1,95 @@
+[
+  {
+    "name": "tiefling"
+  },
+  {
+    "name": "half elf"
+  },
+  {
+    "name": "half orc"
+  },
+  {
+    "name": "halfling"
+  },
+  {
+    "name": "gnome"
+  },
+  {
+    "name": "dragonborn"
+  },
+  {
+    "name": "human"
+  },
+  {
+    "name": "elf"
+  },
+  {
+    "name": "dwarf"
+  },
+  {
+    "name": "aasimar"
+  },
+  {
+    "name": "firbolg"
+  },
+  {
+    "name": "goliath"
+  },
+  {
+    "name": "kenku"
+  },
+  {
+    "name": "lizardfolk"
+  },
+  {
+    "name": "tabaxi"
+  },
+  {
+    "name": "triton"
+  },
+  {
+    "name": "warforged"
+  },
+  {
+    "name": "genasi"
+  },
+  {
+    "name": "goblin"
+  },
+  {
+    "name": "hobgoblin"
+  },
+  {
+    "name": "bugbear"
+  },
+  {
+    "name": "orc"
+  },
+  {
+    "name": "aarakocra"
+  },
+  {
+    "name": "shifter"
+  },
+  {
+    "name": "minotaur"
+  },
+  {
+    "name": "loxodon"
+  },
+  {
+    "name": "centaur"
+  },
+  {
+    "name": "simic hybrid"
+  },
+  {
+    "name": "vedalken"
+  },
+  {
+    "name": "verdan"
+  },
+  {
+    "name": "yuan-ti pureblood"
+  }
+]
