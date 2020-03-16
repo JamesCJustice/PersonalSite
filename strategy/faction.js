@@ -49,5 +49,13 @@ module.exports = {
     return await db.select("* FROM faction");
   },
 
+  getFactionByUsername: async function(username){
+    let rows = await db.select(`* FROM faction WHERE user = '${username}'`);
+    if(rows.length > 0){
+      let faction = rows[0];
+      return faction.id;
+    }
+    return -1;
+  },
 
 }

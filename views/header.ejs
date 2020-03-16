@@ -13,6 +13,9 @@
     <div class="header_left">
       <a href="/">Home</a>
       <a href="/map">Map</a>
+      <% if(typeof faction != 'undefined' && faction != -1){ %>
+        <a href="/factions/manage">Faction</a>
+      <% } %>
     </div>
     <div class="header_center"><img class="img" src="/img/banner.png" alt="Banner"></div>
     <div class="header_right">

@@ -11,7 +11,7 @@ module.exports = function(app){
   app.use(bodyParser.json());
 
   app.get('/map', function(req, res){
-    return res.render('map');
+    return res.render('map', req.headerData);
   });
 
   app.get('/map/regions/:x/:y', getHeaderData, async function(req, res){
@@ -27,21 +27,21 @@ module.exports = function(app){
   });
 
   app.get('/cities', getHeaderData, function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.redirect('/map');
     }
-    return res.render('cities');
+    return res.render('cities', req.headerData);
   });
 
   app.get('/factions', getHeaderData, function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.redirect('/map');
     }
-    return res.render('factions');
+    return res.render('factions', req.headerData);
   });
 
   app.get('/cities/data', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({});
     }
     try{
@@ -55,7 +55,7 @@ module.exports = function(app){
   });
 
   app.post('/cities/:id/delete', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({status: 403});
     }
     let success = 0;
@@ -70,7 +70,7 @@ module.exports = function(app){
   });
 
   app.post('/cities/:id/update', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({status: 403});
     }
     let city = req.body;
@@ -84,7 +84,7 @@ module.exports = function(app){
   });
 
   app.get('/regions/data', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({});
     }
     try{
@@ -98,7 +98,7 @@ module.exports = function(app){
   });
 
   app.post('/regions/:id/delete', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({status: 403});
     }
     let success = 0;
@@ -113,7 +113,7 @@ module.exports = function(app){
   });
 
   app.post('/regions/:id/update', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({status: 403});
     }
     let region = req.body;
@@ -128,7 +128,7 @@ module.exports = function(app){
 
 
   app.get('/factions/data', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({});
     }
     try{
@@ -142,7 +142,7 @@ module.exports = function(app){
   });
 
   app.post('/factions/:id/delete', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({status: 403});
     }
     let success = 0;
@@ -157,7 +157,7 @@ module.exports = function(app){
   });
 
   app.post('/factions/:id/update', getHeaderData, async function(req, res){
-    if(!permissions.isAdmin(getHeaderData['username'])){
+    if(!permissions.isAdmin(req['headerData']['username'])){
       return res.send({status: 403});
     }
     let faction = req.body;
@@ -168,6 +168,17 @@ module.exports = function(app){
       console.error(e);
       res.send({success: 0});
     }
+  });
+
+  app.get('/factions/manage', getHeaderData, async function(req, res){
+    let username = req['headerData']['username'];
+    let faction = await Factions.getFactionByUsername(username);
+    console.log("Faction " + faction);
+    if(faction != -1){
+      res.render('manage_faction', req.headerData);
+      return; 
+    }
+    res.render('map', req.headerData);
   });
 
 }
