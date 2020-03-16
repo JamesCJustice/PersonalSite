@@ -13,7 +13,6 @@ const sqlite3 = require('sqlite3').verbose(),
 
 module.exports = function(app){
     app.use(bodyParser.json());
-    console.log(JSON.stringify(getHeaderData));
     app.use(getHeaderData);
 
     app.get('/login', function(req, res){
@@ -128,12 +127,13 @@ module.exports = function(app){
             return;
         }
         profile.authenticateUser(username, password)
-        .then(function(authenticatedProfile){
+        .then(async function(authenticatedProfile){
             if(authenticatedProfile){
                 req.session.loggedIn = 1;
                 req.session.username = authenticatedProfile.username;
                 req.session.profile_id = authenticatedProfile.id;
-                req.session.faction = Faction.getFactionByUsername(req.session.username);
+                req.session.faction = await Faction.getFactionByUsername(req.session.username);
+                
                 return res.status(200).json({
                     msg: "Authorization successful",
                     success: true,
