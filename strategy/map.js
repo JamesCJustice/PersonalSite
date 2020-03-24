@@ -98,10 +98,26 @@ const schema = new DbSchema({
 module.exports = {
   install: async function(){
     await schema.install();
+    await this.populateFacilityStatic();
   },
 
   uninstall: async function(){
     await schema.uninstall();
+  },
+
+  populateFacilityStatic: async function(){
+    let obj = this;
+    await db.run("DELETE FROM item_static");
+    let rawData = fs.readFileSync('./data/facility_static.json');
+    let facilityData = JSON.parse(rawData); 
+    let insertRows = [];
+    for(let i in facilityData){
+      let facility = facilityData[i];
+      let id = i;
+      let insertRow = [id, facility.name, facility.maintenance, facility.construction_cost, facility.benefit, facility.description];
+      insertRows.push(insertRow);
+    }
+    await db.insert("INTO facility_static(id, name, maintenance, construction_cost, benefit, description) VALUES (?, ?, ?, ?, ?, ?)", insertRows);
   },
 
   getRegionData: async function(x, y){
@@ -141,34 +157,62 @@ module.exports = {
 
   },
 
+  getCitiesByFaction: async function(factionId){
+    let obj = this;
+    let rows = await db.select(`* FROM city WHERE faction_id = '${factionId}'`);
+
+    let cities = [];
+
+    for(let i in rows){
+      let row = rows[i];
+      let city = await obj.getCityById(row.id);
+      cities.push(city);
+    }
+    return cities;
+  },
+
   getCityById: async function(id){
-    let rows = db.select(` * FROM city WHERE id = ${id}`);
+    let rows = await db.select(` * FROM city WHERE id = ${id}`);
     if(rows.length < 1 || id == -1){
       throw new Error(`Invalid city id ${id}`);
     }
     let city = rows[0];
 
-    city.research = db.select(`cf.id,
+    city.facilities = await db.select(`cf.id,
       fs.name,
       fs.benefit,
       fs.description,
       fs.construction_cost,
       fs.maintenance
-      FROM city_facility cf WHERE city_id = ${id}
-      JOIN facility_static fs ON cf.facility_static_id = fs.id`);
+      FROM city_facility cf
+      JOIN facility_static fs ON cf.facility_static_id = fs.id
+      WHERE cf.city_id = '${id}'`);
 
-    city.facilities = db.select(` cr.id,
-      cr.helper_city_id,
-      cr.progress
-      rs.name,
-      rs.benefit,
-      rs.description,
-      rs.construction_cost,
-      rs.maintenance
-      FROM city_research cr WHERE city_id = ${id}
-      JOIN research_static rs ON cr.research_static_id = rs.id`);
+    // city.research = await db.select(` cr.id,
+    //   cr.helper_city_id,
+    //   cr.progress,
+    //   rs.name,
+    //   rs.benefit,
+    //   rs.description,
+    //   rs.cost
+    //   FROM city_research cr
+    //   JOIN research_static rs ON cr.research_static_id = rs.id
+    //   WHERE cr.city_id = '${id}'`);
 
-    city.forces = Force.getForcesByCity(id);
+    city.forces = await Force.getForcesByCity(id);
+
+    city.loyaltyBonuses = this.getCityLoyaltyBonuses(city);
+
+    let gdpModifier = 1.0;
+    city.gdpBonuses = this.getCityGdpBonuses(city);
+    city.baseGdp = city.gdp;
+
+    city.gdpBonuses.forEach(function(bonus){
+      gdpModifier += bonus.value;
+    });
+    city.gdp *= gdpModifier;
+
+    city.finances = this.getCityFinances(city);
 
     return city;
   },
@@ -206,7 +250,7 @@ module.exports = {
       return db.insert("INTO city (name, description, population, x, y, gdp, tax_rate, loyalty, faction_id, region_id, researchers) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [row]);
     }
     row.push(city.id);
-    return db.update(` city SET name = ?, description = ?, population = ?, x = ?, y = ?, region_id = ? WHERE id = ?`, row);
+    return db.update(` city SET name = ?, description = ?, population = ?, x = ?, y = ?, gdp = ?, tax_rate = ?, loyalty = ?, faction_id = ?, region_id = ?, researchers = ? WHERE id = ?`, row);
   },
 
   validateCity: function(city){
@@ -247,6 +291,80 @@ module.exports = {
 
   getCitiesByRegion: async function(regionId){
     return db.select(`* FROM city WHERE region_id = ${regionId}`);
+  },
+
+  getCityLoyaltyBonuses: async function(city){
+    let bonuses = [];
+    
+    // Facility bonuses
+    let facilities = city.facilities;
+    let facilityLoyaltyDict = {
+      "government center": "+1d4",
+      "law center": "+1d4",
+      "recreation center": "+1d4"
+    };
+    let facilityDict = {};
+    facilities.forEach(function(facility){
+      facilityDict[`${facility.name}`] = 1;
+      if(typeof facilityLoyaltyDict[facility.name] !== 'undefined'){
+        bonuses.push({
+          value: facilityLoyaltyDict[facility.name],
+          reason: facility.name
+        });
+      }
+    });
+
+    // TODO: research bonuses
+
+    return bonuses;
+  },
+
+  getCityFinances: function(city){
+    let obj = this;
+    
+    let finances = {
+      revenue: 0,
+      upkeep: 0,
+      net: 0
+    };    
+
+    let tax_rate = city.tax_rate / 100.0;
+    let taxes = tax_rate * city.gdp;
+
+    for(let j in city.facilities){
+      let facility = city.facilities[j];
+      finances.upkeep += facility.maintenance;
+    }
+
+    finances.revenue += taxes;
+    finances.net = finances.revenue - finances.upkeep;
+    return finances;
+  },
+
+  getCityGdpBonuses: function(city){
+    let bonuses = [];
+    
+    // Facility bonuses
+    let facilities = city.facilities;
+    let facilityGdpDict = {
+      "trade center": 0.2,
+      "port": 0.2,
+      "industry center": 1,
+    };
+    let facilityDict = {};
+    facilities.forEach(function(facility){
+      facilityDict[`${facility.name}`] = 1;
+      if(typeof facilityGdpDict[facility.name] !== 'undefined'){
+        bonuses.push({
+          value: facilityGdpDict[facility.name],
+          reason: facility.name
+        });
+      }
+    });
+
+    // TODO: research bonuses
+
+    return bonuses;
   }
 
 }

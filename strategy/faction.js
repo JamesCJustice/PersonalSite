@@ -2,7 +2,8 @@ const DatabasePath = './strategy.db';
 const fs = require('fs'),
   Db = require('../db').Db,
   DbSchema = require('../db').DbSchema,
-  db = new Db(DatabasePath);
+  db = new Db(DatabasePath),
+  Maps = require('./map');
 
 const schema = new DbSchema({
   path: DatabasePath,
@@ -42,7 +43,7 @@ module.exports = {
   },
 
   validateFaction: function(faction){
-    return true; // TODO: Legit validation
+    return true; // TODO: Legit validation when the data firms up
   },
 
   getFactions: async function(){
@@ -57,5 +58,32 @@ module.exports = {
     }
     return -1;
   },
+
+  getFinances: async function(factionId){
+    let cities = await Maps.getCitiesByFaction(factionId);
+    let finances = {
+      revenue: 0,
+      upkeep: 0,
+      net: 0
+    }; 
+
+    cities.forEach(function(city){
+      let cityFinances = city.finances;
+      finances.revenue += cityFinances.revenue;
+      finances.upkeep += cityFinances.upkeep;
+    });
+
+    finances.net = finances.revenue - finances.upkeep;
+
+    return finances;
+  },
+
+  getDashboardInfo: async function(factionId){
+    let obj = this;
+    return {
+      finances: await obj.getFinances(factionId),
+      cities: await Maps.getCitiesByFaction(factionId),
+    }
+  }
 
 }

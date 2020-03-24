@@ -181,4 +181,16 @@ module.exports = function(app){
     res.render('map', req.headerData);
   });
 
+  app.get('/faction/dashboard/:id', getHeaderData, async function(req, res){
+    let username = req['headerData']['username'];
+    let faction = await Factions.getFactionByUsername(username);
+    console.log(`${faction} vs ${req.params.id}`);
+    if(faction != -1 && faction == req.params.id){
+      let data = await Factions.getDashboardInfo(faction);
+      res.send(data);
+      return; 
+    }
+    res.send({success: 0});
+  });
+
 }

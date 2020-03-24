@@ -13,6 +13,58 @@ label {
   background-color: black;
 }
 
+/* Modal Content/Box */
+.faction_dashboard_modal_content {
+  background-color: #fefefe;
+  margin: 15% auto; /* 15% from the top and centered */
+  padding: 20px;
+  border: 1px solid #888;
+  width: 80%; /* Could be more or less, depending on screen size */
+}
+
+/* The Close Button */
+.faction_dashboard_close {
+  color: #aaa;
+  float: right;
+  font-size: 128px;
+  font-weight: bold;
+}
+
+.faction_dashboard_close:hover,
+.faction_dashboard_close:focus {
+  color: black;
+  text-decoration: none;
+  cursor: pointer;
+}
+
+.faction_dashboard_modal {
+  display: none; /* Hidden by default */
+  position: fixed; /* Stay in place */
+  z-index: 1; /* Sit on top */
+  left: 0;
+  top: 0;
+  width: 100%; /* Full width */
+  height: 100%; /* Full height */
+  overflow: auto; /* Enable scroll if needed */
+  background-color: rgb(0,0,0); /* Fallback color */
+  background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
+}
+
+.faction_dashboard_div {
+  background-color: #ffffcc;
+  border-style: solid;
+  border-radius: 5px;
+  border-color: #f2f290;
+  border-width: 5px;
+  max-height: 400px;
+  max-width: 200px;
+}
+
+.faction_item {
+  color: black;
+  background-color: #ffffcc;
+}
+
 .factions_ul {
   overflow: scroll;
   max-height: 200px;
