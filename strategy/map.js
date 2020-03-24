@@ -326,12 +326,6 @@ module.exports = {
     };
   },
 
-  getcityCivics: function(city){
-    return {
-      bonuses: getCityLoyaltyBonuses(city)
-    };
-  },
-
   getCityFinances: function(city){
     let obj = this;
     

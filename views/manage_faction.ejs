@@ -4,6 +4,8 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous">
 </script>
+<script type="text/javascript" src="<%-siteUrl%>js/faction/research.js"></script>
+<script type="text/javascript" src="<%-siteUrl%>js/faction/market.js"></script>
 <script type="text/javascript" src="<%-siteUrl%>js/faction/civics.js"></script>
 <script type="text/javascript" src="<%-siteUrl%>js/faction/military.js"></script>
 <script type="text/javascript" src="<%-siteUrl%>js/faction/finances.js"></script>
@@ -13,12 +15,13 @@
 <h2 id="map_title" class="map_title">Manage Faction</h2>
 <div id="dashboard_modal" class="faction_dashboard_modal"></div>
 
-
-<div id="finances_div" class="faction_dashboard_div"></div>
-<div id="military_div" class="faction_dashboard_div"></div>
-<div id="civics_div" class="faction_dashboard_div"></div>
-<div id="market_div" class="faction_dashboard_div"></div>
-
+<div class="faction_dashboard_table">
+  <div id="finances_div" class="faction_dashboard_div"></div>
+  <div id="military_div" class="faction_dashboard_div"></div>
+  <div id="civics_div" class="faction_dashboard_div"></div>
+  <div id="market_div" class="faction_dashboard_div"></div>
+  <div id="research_div" class="faction_dashboard_div"></div>
+</div>
 <% if(typeof faction !== 'undefined'){ %>
 <div id="faction_div" style="visibility: hidden"><%= faction %></div>
 <% } %>

@@ -1,4 +1,4 @@
-let finances, military, civics, market;
+let finances, military, civics, market, research;
 function initDashboard(data){
   console.log("InitDashboard" + JSON.stringify(data));
   finances = new Finances({
@@ -13,6 +13,16 @@ function initDashboard(data){
   });
   civics = new Civics({
     parentId: 'civics_div',
+    modalId: 'dashboard_modal',
+    data: data
+  });
+  market = new Market({
+    parentId: 'market_div',
+    modalId: 'dashboard_modal',
+    data: data
+  });
+  research = new Research({
+    parentId: 'research_div',
     modalId: 'dashboard_modal',
     data: data
   });

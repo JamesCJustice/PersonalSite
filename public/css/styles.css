@@ -50,7 +50,13 @@ label {
   background-color: rgba(0,0,0,0.4); /* Black w/ opacity */
 }
 
+.faction_dashboard_table {
+  width: 100%;
+  display: flex;
+}
+
 .faction_dashboard_div {
+  flex-grow: 1;
   background-color: #ffffcc;
   border-style: solid;
   border-radius: 5px;
@@ -58,6 +64,8 @@ label {
   border-width: 5px;
   max-height: 400px;
   max-width: 200px;
+  min-height: 200px;
+  min-width: 200px;
 }
 
 .faction_item {
