@@ -84,6 +84,10 @@ class Roller{
     };
   }
 
+  dieToString(die){
+    return `${die.quantity}d${die.size}`;
+  }
+
   parseModifier(rollString){
     let regex = /[^d]( )?\d+$/;
     if(!rollString.match(regex)){
@@ -94,11 +98,47 @@ class Roller{
     mod = parseInt(mod);
     return mod;
   }
+
+  combineDice(dice){
+    let obj = this;
+    let combined = [];
+
+    dice.forEach(function(dieString){
+      let die = obj.parseDie(dieString);
+      let dieMatchIndex = obj.dieMatchIndex(combined, die);
+      if(dieMatchIndex == -1){
+        combined.push(die);
+      }
+      else{
+        combined[dieMatchIndex].quantity += die.quantity;
+      }
+    });
+
+    let combinedDiceString = "";
+    combined.forEach(function(die){
+      combinedDiceString += obj.dieToString(die) + " ";
+    });
+    return combinedDiceString;
+  }
+
+  dieMatchIndex(dice, die){
+    for(let i in dice){
+      if(die.size == dice[i].size){
+        return i;
+      }
+    }
+    return -1;
+  }
 }
 
 function roll(rollString){
   let roller = new Roller({});
   return roller.rollFromString(rollString);
+}
+
+function combineDice(dice){
+  let roller = new Roller({});
+  return roller.combineDice(dice);
 }
 
 module.exports = {
