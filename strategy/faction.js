@@ -1,5 +1,6 @@
 const DatabasePath = './strategy.db';
 const fs = require('fs'),
+  Dice = require('../dice'),
   Db = require('../db').Db,
   DbSchema = require('../db').DbSchema,
   db = new Db(DatabasePath),
@@ -98,18 +99,48 @@ module.exports = {
     return info;
   },
 
+  getCivicsInfo: function(cities){
+    let info = {
+      totalLoyaltyBonuses: "",
+      totalLoyalty: 0,
+      loyalCities: 0,
+      neutralCities: 0,
+      unloyalCities: 0
+    };
+    let bonusDice = [];
+    cities.forEach(function(city){
+      if(typeof city.loyaltyBonuses.total !== 'undefined'){
+        bonusDice.push(city.loyaltyBonuses.total);
+      }
+      info.totalLoyalty += city.loyalty;
+      if(city.loyalty > 30){
+        info.loyalCities += 1;
+      }
+      else if(city.loyalty > 0){
+        info.neutralCities += 1;
+      }
+      else{
+        info.unloyalCities += 1;
+      }
+    });
+    info.totalLoyaltyBonuses = Dice.combineDice(bonusDice);
+    return info;
+  },
+
   getDashboardInfo: async function(factionId){
     let obj = this;
     let cities = await Maps.getCitiesByFaction(factionId);
     let finances = obj.getFinancesInfo(cities);
     let forces = await Forces.getForcesByFaction(factionId);
     let military = obj.getMilitaryInfo(forces);
+    let civics = obj.getCivicsInfo(cities);
     return {
       finances: finances,
       cities: cities,
       military: military,
-      forces: forces
-    }
+      forces: forces,
+      civics: civics,
+    };
   }
 
 }

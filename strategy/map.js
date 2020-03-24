@@ -3,6 +3,7 @@ const DatabaseFile = './strategy.db';
 const fs = require('fs'),
   Force = require('./force'),
   Db = require('../db').Db,
+  Dice = require('../dice'),
   DbSchema = require('../db').DbSchema,
   db = new Db(DatabaseFile);
 
@@ -293,7 +294,7 @@ module.exports = {
     return db.select(`* FROM city WHERE region_id = ${regionId}`);
   },
 
-  getCityLoyaltyBonuses: async function(city){
+  getCityLoyaltyBonuses: function(city){
     let bonuses = [];
     
     // Facility bonuses
@@ -303,6 +304,7 @@ module.exports = {
       "law center": "+1d4",
       "recreation center": "+1d4"
     };
+    let bonusDice = [];
     let facilityDict = {};
     facilities.forEach(function(facility){
       facilityDict[`${facility.name}`] = 1;
@@ -311,12 +313,23 @@ module.exports = {
           value: facilityLoyaltyDict[facility.name],
           reason: facility.name
         });
+        bonusDice.push(facilityLoyaltyDict[facility.name]);
       }
     });
 
     // TODO: research bonuses
 
-    return bonuses;
+    let total = Dice.combineDice(bonusDice);
+    return {
+      bonuses: bonuses,
+      total: total
+    };
+  },
+
+  getcityCivics: function(city){
+    return {
+      bonuses: getCityLoyaltyBonuses(city)
+    };
   },
 
   getCityFinances: function(city){

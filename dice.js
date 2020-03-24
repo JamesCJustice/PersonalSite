@@ -142,6 +142,7 @@ function combineDice(dice){
 }
 
 module.exports = {
-  Roller = Roller,
-  roll = roll
+  Roller: Roller,
+  roll: roll,
+  combineDice: combineDice
 }

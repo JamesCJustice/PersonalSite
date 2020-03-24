@@ -11,6 +11,11 @@ function initDashboard(data){
     modalId: 'dashboard_modal',
     data: data
   });
+  civics = new Civics({
+    parentId: 'civics_div',
+    modalId: 'dashboard_modal',
+    data: data
+  });
 }
 
 $(document).ready(function(){
