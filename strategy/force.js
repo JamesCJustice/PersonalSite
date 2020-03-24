@@ -61,9 +61,63 @@ const schema = new DbSchema({
         'data TEXT' // JSON
       ]
     }
-
   ]
 });
+
+async function getUnitById(id){
+  let rows = await db.select(`
+    u.xp,
+    u.name,
+    rs.name as 'race',
+    rs.data as 'raceData',
+    sbs.data as 'stat'
+
+    FROM unit u
+    JOIN race_static rs ON rs.id = u.race_static_id
+    JOIN stat_block_static sbs ON sbs.id = u.stat_block_id
+    WHERE u.id = ${id}
+  `);
+  if(rows.length < 1 || id == -1){
+    throw new Error(`Invalid unit id ${id}`);
+  }
+
+  let unit = rows[0];
+  unit.raceData = JSON.parse(unit.raceData);
+  rows = await db.select(`
+    ist.data as 'data'
+    FROM unit_item ui 
+    JOIN item_static ist ON ui.item_id = ist.id
+    WHERE ui.unit_id = ${id}
+  `);
+
+  unit.inventory = [];
+  for(let i in rows){
+    let row = rows[i];
+    unit.inventory.push(JSON.parse(row.data));
+  }
+  return unit;
+}
+
+async function getForceById(id){
+  let rows = await db.select(` * FROM force WHERE id = ${id}`);
+  if(rows.length < 1 || id == -1){
+    throw new Error(`Invalid force id ${id}`);
+  }
+  let force = rows[0];
+  force.units = [];
+
+  rows = await db.select(`name FROM city WHERE id = ${force.city_id}`);
+  if(rows.length > 0){
+    force.city = rows[0].name;
+  }
+
+  rows = await db.select(`id FROM unit WHERE force_id = ${id}`);
+  for(let i in rows){
+    let row = rows[i];
+    force.units.push(await getUnitById(row.id));
+  }
+  return force;
+}
 
 module.exports = {
   install: async function(){
@@ -75,6 +129,21 @@ module.exports = {
     await schema.uninstall();
   },
 
+  getUnitById: getUnitById,
+
+  getForceById: getForceById,
+
+  getForcesByFaction: async function(factionId){
+    let rows = await db.select(` id FROM force WHERE faction_id = ${factionId}`);
+    let forces = [];
+    for(let i in rows){
+      let row = rows[i];
+      let force = await getForceById(row.id);
+      forces.push(force);
+    }
+    return forces;
+  },
+
   getForcesByCity: async function(cityId){
     let rows = await db.select(` id FROM force WHERE city_id = ${cityId}`);
     let forces = [];
@@ -83,54 +152,6 @@ module.exports = {
       forces.push(await getForceById(row.id));
     }
     return forces;
-  },
-
-  getForceById: async function (id){
-    let rows = await db.select(` * FROM force WHERE city_id = ${id}`);
-    if(rows.length < 1 || id == -1){
-      throw new Error(`Invalid force id ${id}`);
-    }
-    let force = rows[0];
-    force.units = [];
-    rows = await db.select(`id FROM unit WHERE force_id = ${id}`);
-
-    for(let i in rows){
-      let row = rows[i];
-      force.units.append(await getUnitById(row.id));
-    }
-    return force;
-  },
-
-  getUnitById: async function(id){
-    let rows = await db.select(`
-      u.xp,
-      u.name,
-      rs.name as 'race',
-      rs.data as 'raceData',
-      sbs.data as 'stat',
-
-      FROM unit u WHERE id = ${id}
-      JOIN race_static rs ON rs.id = u.race_static_id
-      JOIN stat_block_static sbs ON sbs.id = u.stat_block_id
-    `);
-    if(rows.length < 1 || id == -1){
-      throw new Error(`Invalid unit id ${id}`);
-    }
-
-    let unit = rows[0];
-    unit.raceData = JSON.parse(unit.raceData);
-    rows = await db.select(`
-      is.data as 'data'
-      FROM unit_item ui WHERE unit_id = ${id}
-      JOIN item_static is ON ui.item_id = is.id
-    `);
-
-    unit.inventory = [];
-    for(let i in rows){
-      let row = rows[i];
-      unit.inventory.push(JSON.parse(row.data));
-    }
-    return item;
   },
 
   populate_item_static: async function(){

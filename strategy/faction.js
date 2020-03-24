@@ -3,7 +3,8 @@ const fs = require('fs'),
   Db = require('../db').Db,
   DbSchema = require('../db').DbSchema,
   db = new Db(DatabasePath),
-  Maps = require('./map');
+  Maps = require('./map'),
+  Forces = require('./force');
 
 const schema = new DbSchema({
   path: DatabasePath,
@@ -59,8 +60,7 @@ module.exports = {
     return -1;
   },
 
-  getFinances: async function(factionId){
-    let cities = await Maps.getCitiesByFaction(factionId);
+  getFinancesInfo: function(cities){
     let finances = {
       revenue: 0,
       upkeep: 0,
@@ -78,11 +78,37 @@ module.exports = {
     return finances;
   },
 
+  getMilitaryInfo: function(forces){
+    let info = {
+      defendingUnits: 0,
+      defendingForces: 0,
+      mobilizedForces: 0,
+      mobilizedUnits: 0
+    };
+    forces.forEach(function(force){
+      if(force.city_id == -1){
+        info.mobilizedForces += 1;
+        info.mobilizedUnits += force.units.length;
+      }
+      else{
+        info.defendingForces += 1;
+        info.defendingUnits += force.units.length;
+      }
+    });
+    return info;
+  },
+
   getDashboardInfo: async function(factionId){
     let obj = this;
+    let cities = await Maps.getCitiesByFaction(factionId);
+    let finances = obj.getFinancesInfo(cities);
+    let forces = await Forces.getForcesByFaction(factionId);
+    let military = obj.getMilitaryInfo(forces);
     return {
-      finances: await obj.getFinances(factionId),
-      cities: await Maps.getCitiesByFaction(factionId),
+      finances: finances,
+      cities: cities,
+      military: military,
+      forces: forces
     }
   }
 
