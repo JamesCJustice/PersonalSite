@@ -2,7 +2,8 @@ const modules = [
   '../profile',
   '../strategy/map',
   '../strategy/force',
-  '../strategy/faction'
+  '../strategy/faction',
+  '../strategy/order',
 ];
 
 async function run(){

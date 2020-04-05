@@ -4,6 +4,7 @@ module.exports = function(app){
     bodyParser = require('body-parser'),
     Factions = require('../strategy/faction'),
     Maps = require('../strategy/map'),
+    Orders = require('../strategy/order'),
     permissions = require('../permissions'),
     url = require('url'),
     ejs = require('ejs');
@@ -15,9 +16,12 @@ module.exports = function(app){
   });
 
   app.get('/map/regions/:x/:y', getHeaderData, async function(req, res){
-    let x = req.params.x;
-    let y = req.params.y;
     try{
+      let x = parseInt(req.params.x);
+      let y = parseInt(req.params.y);
+      if(isNaN(x) || isNaN(y)){
+        throw new Error(`Invalid input ${req.params.x}, ${req.params.y}`);
+      }
       let mapRegionData = await Maps.getMapRegion(x, y, req.headerData['username']);
       return res.send(mapRegionData);
     }catch(e){
@@ -38,6 +42,13 @@ module.exports = function(app){
       return res.redirect('/map');
     }
     return res.render('factions', req.headerData);
+  });
+
+  app.get('/orders', getHeaderData, function(req, res){
+    if(!permissions.isAdmin(req['headerData']['username'])){
+      return res.redirect('/map');
+    }
+    return res.render('orders', req.headerData);
   });
 
   app.get('/cities/data', getHeaderData, async function(req, res){
@@ -191,6 +202,49 @@ module.exports = function(app){
       return; 
     }
     res.send({success: 0});
+  });
+
+  app.get('/orders/data', getHeaderData, async function(req, res){
+    if(!permissions.isAdmin(req['headerData']['username'])){
+      return res.send({});
+    }
+    try{
+      let factions = await Orders.getAllOrders();
+      return res.send(factions);
+    } catch(e) {
+      console.log(e);
+      return res.send({});
+    }
+    
+  });
+
+  app.post('/orders/:id/delete', getHeaderData, async function(req, res){
+    if(!permissions.isAdmin(req['headerData']['username'])){
+      return res.send({status: 403});
+    }
+    let success = 0;
+    try {
+      await Orders.cancelOrder(req.params.id);
+      success = 1;
+    } catch(e) {
+      console.error(e);
+      success = 0;
+    }
+    return res.send({success: success});
+  });
+
+  app.post('/orders/:id/update', getHeaderData, async function(req, res){
+    if(!permissions.isAdmin(req['headerData']['username'])){
+      return res.send({status: 403});
+    }
+    let order = req.body;
+    try {
+      await Orders.createOrExecuteOrder(order);
+      res.send({success: 1}); 
+    } catch(e) {
+      console.error(e);
+      res.send({success: 0});
+    }
   });
 
 }

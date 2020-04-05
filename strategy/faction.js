@@ -141,6 +141,11 @@ module.exports = {
       forces: forces,
       civics: civics,
     };
+  },
+
+  executeOrder: async function(order){
+    let obj = this;
+    console.log("Executing order " + JSON.stringify(order));
   }
 
 }

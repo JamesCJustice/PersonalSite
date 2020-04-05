@@ -108,7 +108,7 @@ module.exports = {
 
   populateFacilityStatic: async function(){
     let obj = this;
-    await db.run("DELETE FROM item_static");
+    await db.run("DELETE FROM facility_static");
     let rawData = fs.readFileSync('./data/facility_static.json');
     let facilityData = JSON.parse(rawData); 
     let insertRows = [];
@@ -282,8 +282,7 @@ module.exports = {
         id: -1,
         name: "No Data",
         x: x,
-        y: y,
-        cities: []
+        y: y
       };
     }
     let region = rows[0];
@@ -372,6 +371,10 @@ module.exports = {
     // TODO: research bonuses
 
     return bonuses;
-  }
+  },
 
+  executeOrder: async function(order){
+    let obj = this;
+    console.log("Executing order " + JSON.stringify(order));
+  }
 }

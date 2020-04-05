@@ -132,6 +132,11 @@ label {
   display: table-cell;
 }
 
+.faction_canvas {
+  background-color: #ffffcc;
+  float: left;
+}
+
 .map_canvas {
   margin: auto;
   background-color: #ffffcc;

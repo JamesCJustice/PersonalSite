@@ -2,27 +2,35 @@
 const sqlite3 = require('sqlite3').verbose();
 
 class DatabaseHelper{
-  constructor(databaseFile){
+  constructor(databaseFile, verbose=false){
     this.db = new sqlite3.Database(databaseFile);
+    this.verbose = verbose;
   }
 
   run(sql){
     let obj = this;
     return new Promise(function(resolve, reject){
-        obj.db.get(sql, function(err, row){
-            if(err){
-                console.log("Err " + err);
-                reject(err);
-            }
-            resolve(row);
-        });
+      if(obj.verbose){
+        console.log(sql);
+      }
+      obj.db.get(sql, function(err, row){
+          if(err){
+              console.log("Err " + err);
+              reject(err);
+          }
+          resolve(row);
+      });
     });
   }
 
   selectRow(sql){
     let obj = this;
     return new Promise(function(resolve, reject){
-        obj.db.get("SELECT " + sql, function(err, row){
+        sql = `SELECT ${sql}`;
+        if(obj.verbose){
+          console.log(sql);
+        }
+        obj.db.get(sql, function(err, row){
             if(err){
                 reject(err);
             }
@@ -34,7 +42,11 @@ class DatabaseHelper{
   select(sql){
     let obj = this;
     return new Promise(function(resolve, reject){
-        obj.db.all("SELECT " + sql, function(err, rows){
+        sql = `SELECT ${sql}`;
+        if(obj.verbose){
+          console.log(sql);
+        }
+        obj.db.all(sql, function(err, rows){
             if(err){
                 reject(err);
             }
@@ -46,10 +58,17 @@ class DatabaseHelper{
   insert(sql, rows){
     let obj = this;
     return new Promise(function(resolve, reject){
-      let stmt = obj.db.prepare("INSERT " + sql);
+      sql = `INSERT ${sql}`;
+      if(obj.verbose){
+        console.log(sql);
+      }
+      let stmt = obj.db.prepare(sql);
       try{
         for(let i in rows){
           let row = rows[i];
+          if(obj.verbose){
+            console.log("Inserting " + JSON.stringify(row));
+          }
           stmt.run(row);  
         }
       } catch(err){
@@ -63,7 +82,11 @@ class DatabaseHelper{
   insertOrReplace(sql, rows){
     let obj = this;
     return new Promise(function(resolve, reject){
-      let stmt = obj.db.prepare("INSERT OR REPLACE " + sql);
+      sql = "INSERT OR REPLACE " + sql;
+      if(obj.verbose){
+        console.log(sql);
+      }
+      let stmt = obj.db.prepare(sql);
       try{
         for(let i in rows){
           let row = rows[i];
@@ -79,7 +102,11 @@ class DatabaseHelper{
   delete(sql, args){
     let obj = this;
     return new Promise(function(resolve, reject){
-      obj.db.run("DELETE " + sql, args, function(err) {
+      sql = "DELETE " + sql;
+      if(obj.verbose){
+        console.log(sql + JSON.stringify(args));
+      }
+      obj.db.run(sql, args, function(err) {
         if (err) {
           reject(err);
         }
@@ -91,7 +118,11 @@ class DatabaseHelper{
   update(sql, row){
     let obj = this;
     return new Promise(function(resolve, reject){
-      obj.db.run("UPDATE " + sql, row, function(err) {
+      sql = "UPDATE " + sql;
+      if(obj.verbose){
+        console.log(sql + JSON.stringify(row));
+      }
+      obj.db.run(sql, row, function(err) {
         if (err) {
           reject(err);
         }

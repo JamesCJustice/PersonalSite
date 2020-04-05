@@ -1,4 +1,4 @@
-let finances, military, civics, market, research;
+let finances, military, civics, market, research, canvas, strategyMap;
 function initDashboard(data){
   console.log("InitDashboard" + JSON.stringify(data));
   finances = new Finances({
@@ -26,6 +26,8 @@ function initDashboard(data){
     modalId: 'dashboard_modal',
     data: data
   });
+  canvas = new Canvas('faction_canvas', 1000, 1000);
+  strategyMp = new StrategyMap(canvas);
 }
 
 $(document).ready(function(){

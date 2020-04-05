@@ -203,4 +203,9 @@ module.exports = {
     }
     await db.insert("INTO stat_block_static(id, data) VALUES (?, ?)", insertRows);
   },
+
+  executeOrder: async function(order){
+    let obj = this;
+    console.log("Executing order " + JSON.stringify(order));
+  }
 }

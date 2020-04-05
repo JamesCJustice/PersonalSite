@@ -4,6 +4,8 @@
   integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8="
   crossorigin="anonymous">
 </script>
+<script type="text/javascript" src="<%-siteUrl%>js/faction/strategy_map.js"></script>
+<script type="text/javascript" src="<%-siteUrl%>js/faction/canvas.js"></script>
 <script type="text/javascript" src="<%-siteUrl%>js/faction/research.js"></script>
 <script type="text/javascript" src="<%-siteUrl%>js/faction/market.js"></script>
 <script type="text/javascript" src="<%-siteUrl%>js/faction/civics.js"></script>
@@ -11,7 +13,7 @@
 <script type="text/javascript" src="<%-siteUrl%>js/faction/finances.js"></script>
 <script type="text/javascript" src="<%-siteUrl%>js/faction/manage.js"></script>
 <% include header %>
-
+<body oncontextmenu="return false;">
 <h2 id="map_title" class="map_title">Manage Faction</h2>
 <div id="dashboard_modal" class="faction_dashboard_modal"></div>
 
@@ -22,6 +24,7 @@
   <div id="market_div" class="faction_dashboard_div"></div>
   <div id="research_div" class="faction_dashboard_div"></div>
 </div>
+<canvas id="faction_canvas" class="faction_canvas" width="1000px" height="1000px"></canvas>
 <% if(typeof faction !== 'undefined'){ %>
 <div id="faction_div" style="visibility: hidden"><%= faction %></div>
 <% } %>

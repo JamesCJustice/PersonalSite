@@ -163,14 +163,11 @@ function updateProfileExtra(id, extra){
   });
 }
 
-function authenticateUser(username, pass){
+function authenticateUser(username, pass, res){
   return getProfileByUsername(username)
   .then(function(userProfile){
     if(userProfile == undefined){
-        return res.status(401).json({
-            msg: "Authorization unsuccessful. User " + username + " doesn't exist.",
-            success: false
-        });
+        return false;
     }
 
     const hash = crypto.createHash('sha256');

@@ -37,13 +37,13 @@ class MouseData{
   }
 
   updateMouseData(){
-  this.clicked = this.down && !this.downPrev;
-  this.released = !this.down && this.downPrev;
-  if(this.clicked){
-    this.downX = this.x;
-    this.downY = this.y;
+    this.clicked = this.down && !this.downPrev;
+    this.released = !this.down && this.downPrev;
+    if(this.clicked){
+      this.downX = this.x;
+      this.downY = this.y;
+    }
+    this.downPrev = this.down;
   }
-  this.downPrev = this.down;
-}
 
 }
