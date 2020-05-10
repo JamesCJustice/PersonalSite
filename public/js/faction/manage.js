@@ -1,5 +1,21 @@
-let finances, military, civics, market, research, canvas, strategyMap;
+let finances, military, civics, market, research, canvas, strategyMap, orders;
 function initDashboard(data){
+  let ordersData = {
+    all: [
+      { 
+        id: 1, 
+        faction_id: 1, 
+        user_id: 1, 
+        order_type: "something", 
+        order_data: '{ "cool":1 }', 
+        extra_info: "Do not feed after midnight",
+        status: "PENDING",
+        executed: null,
+        created: "Yesterday, I guess"
+      }
+    ]
+  };
+  data.orders = ordersData;
   console.log("InitDashboard" + JSON.stringify(data));
   finances = new Finances({
     parentId: 'finances_div',
@@ -26,12 +42,16 @@ function initDashboard(data){
     modalId: 'dashboard_modal',
     data: data
   });
+  orders = new Orders({
+    parentId: 'orders_div',
+    modalId: 'dashboard_modal',
+    data: data
+  });
   canvas = new Canvas('faction_canvas', 1000, 1000);
   strategyMp = new StrategyMap(canvas);
 }
 
 $(document).ready(function(){
-  console.log("Started");
   let factionId = $("#faction_div").text();
   $.ajax({
     type: 'GET',
