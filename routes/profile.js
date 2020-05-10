@@ -8,8 +8,7 @@ const sqlite3 = require('sqlite3').verbose(),
     db = new sqlite3.Database('profile.db'),
     profile = require('../profile'),
     ejs = require('ejs'),
-    getHeaderData = require('../middleware/getHeaderData'),
-    Faction = require('../strategy/faction');
+    getHeaderData = require('../middleware/getHeaderData');
 
 module.exports = function(app){
     app.use(bodyParser.json());
@@ -132,7 +131,6 @@ module.exports = function(app){
                 req.session.loggedIn = 1;
                 req.session.username = authenticatedProfile.username;
                 req.session.profile_id = authenticatedProfile.id;
-                req.session.faction = await Faction.getFactionByUsername(req.session.username);
                 
                 return res.status(200).json({
                     msg: "Authorization successful",

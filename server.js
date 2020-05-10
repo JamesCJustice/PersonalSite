@@ -25,7 +25,9 @@ app.use('/css', express.static(__dirname + '/css'));
 
 require('./routes/profile')(app);
 require('./routes/index')(app);
-require('./routes/strategy')(app);
+require('./routes/cities')(app);
+require('./routes/regions')(app);
+require('./routes/map')(app);
 
 app.get('*', function(req, res){
   res.render('notFound');
