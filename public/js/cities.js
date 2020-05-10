@@ -21,7 +21,7 @@ $(document).ready(function(){
       { type: "text", name: "name", example: "Coolsville", default: "" },
       { type: "text", name: "x", example: "0", default: "" },
       { type: "text", name: "y", example: "0", default: "" },
-      { type: "text", name: "region_id", example: "-1", default: "" },
+      { type: "text", name: "region", example: "ExampleRegion", default: "" },
     ],
   });
   regionsModel.update();

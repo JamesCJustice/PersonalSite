@@ -164,7 +164,9 @@
     "test": "echo \"Error: no test specified\" && exit 1",
     "start": "node server.js",
     "install": "node bin/install.js",
-    "uninstall": "node bin/uninstall.js"
+    "uninstall": "node bin/uninstall.js",
+    "export_map": "node bin/export_map.js",
+    "import_map": "node bin/import_map.js"
   },
   "repository": {
     "type": "git",

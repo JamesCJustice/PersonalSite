@@ -3,7 +3,7 @@ const DatabaseFile = './strategy.db';
 const fs = require('fs'),
   Db = require('../db').Db,
   DbSchema = require('../db').DbSchema,
-  db = new Db(DatabaseFile);
+  db = new Db(DatabaseFile, true);
 
 const schema = new DbSchema({
   path: DatabaseFile,
@@ -15,8 +15,7 @@ const schema = new DbSchema({
         'name VARCHAR(255)',
         'x INTEGER',
         'y INTEGER',
-        'region_id INTEGER',
-        'researchers INTEGER',
+        'region VARCHAR(255) NOT NULL',
       ]
     },
     {
@@ -47,14 +46,13 @@ module.exports = {
       return region;
     }
 
-    region.cities = getCitiesByRegion(region.id);
+    region.cities = getCitiesByRegion(region.name);
 
     return region;
   },
 
   getRegionByCoords: async function(x, y){
-    let rows = await db.select(` * from region WHERE x = ${x} AND y = ${y}`);
-
+    let rows = await db.select(' * from region WHERE x = ${x} AND y = ${y}');
     if(rows.length < 1){
       return {
         id: -1,
@@ -65,16 +63,6 @@ module.exports = {
       };
     }
     return rows[0];
-  },
-
-  getCitiesByRegion: async function(regionId){
-    let rows = db.select(` id FROM city WHERE region_id = ${regionId}`);
-    let cities = [];
-    for(let i in rows){
-      let row = rows[i];
-      cities.push(getCityById(row.id));
-    }
-
   },
 
   getCityById: async function(id){
@@ -106,7 +94,7 @@ module.exports = {
   },
 
   deleteRegion: async function(id){
-    return await db.delete(`FROM region WHERE id = ${id}`);
+    return await db.delete(`FROM region WHERE id = ?`, id);
   },
 
   getCities: async function(){
@@ -115,12 +103,12 @@ module.exports = {
 
   createOrUpdateCity: async function(city){
     this.validateCity(city);
-    let row = [ city.name, city.description, city.population, city.x, city.y, city.gdp, city.tax_rate, city.loyalty, city.faction_id, city.region_id, city.researchers ];
+    let row = [ city.name, city.x, city.y, city.region ];
     if(city.id == -1){
-      return db.insert("INTO city (name, description, population, x, y, gdp, tax_rate, loyalty, faction_id, region_id, researchers) VALUES(?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)", [row]);
+      return db.insert("INTO city (name, x, y, region) VALUES(?, ?, ?, ?)", [row]);
     }
     row.push(city.id);
-    return db.update(` city SET name = ?, description = ?, population = ?, x = ?, y = ?, gdp = ?, tax_rate = ?, loyalty = ?, faction_id = ?, region_id = ?, researchers = ? WHERE id = ?`, row);
+    return db.update(` city SET name = ?, x = ?, y = ?, region = ? WHERE id = ?`, row);
   },
 
   validateCity: function(city){
@@ -128,14 +116,14 @@ module.exports = {
   },
 
   deleteCity: async function(id){
-    return await db.delete(`FROM city WHERE id = ${id}`);
+    return await db.delete(`FROM city WHERE id = ?`, id);
   },
 
   getMapRegion: async function(x, y, faction){
     let obj = this;
     let region = await obj.getRegionByCoords(x, y);
     region.cities = [];
-    let cities = region.id > -1 ? await obj.getCitiesByRegion(region.id) : [];
+    let cities = region.id > -1 ? await obj.getCitiesByRegion(region.name) : [];
     for(let i in cities){
       let city = cities[i];
       region.cities.push(city);
@@ -158,7 +146,7 @@ module.exports = {
     return region;
   },
 
-  getCitiesByRegion: async function(regionId){
-    return db.select(`* FROM city WHERE region_id = ${regionId}`);
+  getCitiesByRegion: async function(regionName){
+    return db.select(`* FROM city WHERE region = '${regionName}'`);
   },
 }
